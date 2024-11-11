@@ -14,13 +14,13 @@ export const homeData = [
   },
   {
     id: 2,
-    name: "skull island",
-    rating: 4.6,
-    time: "2hr : 22mins",
-    desc: "The island, like its inhabitants, is wholly fictional. Kong's island home in the Pacific makes its first appearance, along with Kong himself, in the 1933 film King Kong. ",
-    starring: "Brenda Chapman, Jeff Nathanson",
-    genres: "Adventures",
-    tags: "Adventures,Animation,Family",
+    name: "โรคย้ำคิดย้ำทำ",
+    // rating: 4.6,
+    // time: "2hr : 22mins",
+    desc: "มีความรู้สึกว่าต้องทำอะไรซ้ำๆ หรือคิดวนเวียนเรื่องเดิมไม่จบสิ้นไหม? ความคิดเหล่านี้ที่ควบคุมไม่ได้อาจเป็นอาการหนึ่งของโรคย้ำคิดย้ำทำ ซึ่งทำให้เรารู้สึกไม่ดีพอ วิตกกังวล หรือรู้สึกผิดแม้จะรู้ว่ามันไม่มีเหตุผล ก้าวแรกสู่การรักษาคือการเข้าใจว่าเราไม่ได้เป็นเพียงคนเดียวที่เผชิญกับอาการนี้ และยังมีหนทางในการช่วยให้เรากลับมาควบคุมชีวิตได้อีกครั้ง ",
+    starring: "โหมดจำลอง",
+    genres: "โรคทางจิตเวช",
+    tags: "วิตกกังวล,ย้ำคิดย้ำทำ,โรคทางจิตเวช",
     cover: "../images/home2.jpg",
     video: "../video/video2.mp4",
     date: "10-JUL-2021",
@@ -55,14 +55,14 @@ export const homeData = [
 export const upcome = [
   {
     id: 1,
-    cover: "../images/upcome/u1.jpg",
-    name: "My office Boss",
+    cover: "../images/home1.jpg",
+    name: "โรคเกลียดตัวเอง",
     time: "2hr : 38mins",
   },
   {
     id: 2,
-    cover: "../images/upcome/u2.jpg",
-    name: "Shadowe",
+    cover: "../images/home2.jpg",
+    name: "โรคย้ำคิดย้ำทำ",
     time: "2hr : 38mins",
   },
   {
@@ -186,4 +186,45 @@ export const recommended = [
     name: "Another Danger",
     time: "2hr : 38mins",
   },
+  
 ]
+export const docter = [
+  {
+    id: 1,
+    name: "ดร. สมชาย ปราการ",
+    clinic: "คลินิคสมชาย",
+    province: "กรุงเทพฯ",
+    image: "https://via.placeholder.com/80" 
+  },
+  {
+    id: 2,
+    name: "นพ. อรอุมา โพธิ์",
+    clinic: "คลินิกรักสุขภาพ",
+    province: "เชียงใหม่",
+    image: "https://via.placeholder.com/80"
+  },
+  {
+    id: 3,
+    name: "พญ. ปาริฉัตร ยินดี",
+    clinic: "คลินิกสหคลินิก",
+    province: "นครราชสีมา",
+    image: "https://via.placeholder.com/80"
+  }
+]
+export const posts = [
+  {
+    id: 1,
+    username: "สมชาย_123",
+    message: "วันนี้มีการประชุมเรื่องสุขภาพที่ดี ร่วมมาแชร์ความคิดเห็นกันนะครับ!"
+  },
+  {
+    id: 2,
+    username: "พรทิพย์_456",
+    message: "อยากถามว่ามีวิธีดูแลปอดอย่างไรดีในช่วงนี้?"
+  },
+  {
+    id: 3,
+    username: "จันทร์ทิพย์_789",
+    message: "ใครมีคำแนะนำเกี่ยวกับการออกกำลังกายในวัยทองบ้างครับ?"
+  }
+];

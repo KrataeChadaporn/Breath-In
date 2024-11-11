@@ -2,12 +2,16 @@ import React, { useState } from "react"
 import Homes from "../components/homes/Homes"
 import Trending from "../components/trending/Trending"
 import Upcomming from "../components/upcoming/Upcomming"
-import { latest, recommended, upcome } from "../dummyData"
+import Community from "../components/community/Community"
+import { latest, recommended, upcome,docter,posts } from "../dummyData"
 
 const HomePage = () => {
   const [items] = useState(upcome)
   const [item] = useState(latest)
   const [rec] = useState(recommended)
+  const [doc] = useState(docter)
+  const [post] = useState(posts)
+  
   
   return (
     <>
@@ -15,7 +19,7 @@ const HomePage = () => {
       <Upcomming items={items} title='โหมดจำลอง' />
       <Upcomming items={item} title='บทความ' />
       <Trending />
-      <Upcomming items={rec} title='ชุมชน' />
+      <Community items={{ doc, post }} title="ชุมชน" />
     </>
   )
 }

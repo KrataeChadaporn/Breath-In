@@ -36,6 +36,8 @@
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   -webkit-font-smoothing: antialiased;
+  line-height: 1.8; 
+  letter-spacing: 0; 
 }
 .coverImage::after {
   content: "";

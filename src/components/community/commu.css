@@ -1,0 +1,104 @@
+.community-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    gap: 20px;
+    max-width: 1200px;
+    margin: auto;
+  }
+  
+  .expert-section,
+  .community-section {
+    width: 48%;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .expert-section h2,
+  .community-section h2 {
+    text-align: center;
+    margin-bottom: 15px;
+  }
+  
+  .expert-section ul,
+  .community-section ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .expert-card {
+    background-color: #fff;
+    margin-bottom: 15px;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transition: transform 0.3s ease;
+  }
+  
+  .expert-card:hover {
+    transform: scale(1.05);
+  }
+  
+  .expert-card img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+  
+  .expert-info {
+    flex-grow: 1;
+  }
+  
+  .expert-info h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: bold;
+  }
+  
+  .expert-info p {
+    margin: 5px 0;
+    font-size: 0.9rem;
+    color: #555;
+  }
+  
+  .options button {
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    transition: background-color 0.3s;
+  }
+  
+  .options button:hover {
+    background-color: #0056b3;
+  }
+  
+  .post-card {
+    background-color: #fff;
+    margin-bottom: 15px;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .post-card h4 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #007bff;
+  }
+  
+  .post-card p {
+    font-size: 1rem;
+    color: #555;
+  }
+  
