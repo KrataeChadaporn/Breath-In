@@ -14,23 +14,23 @@ const Header = () => {
             {/*<ul className='flexSB'>*/}
             <ul className={Mobile ? "navMenu-list" : "flexSB"} onClick={() => setMobile(false)}>
               <li>
-                <a href='/'>Home</a>
+                <a href='/'>หน้าหลัก</a>
               </li>
               <li>
-                <a href='/'>Series</a>
+                <a href='/'>เมนู</a>
               </li>
               <li>
-                <a href='/'>Movies</a>
+                <a href='/'>บทความ</a>
               </li>
               <li>
-                <a href='/'>Pages</a>
+                <a href='/'>ติดตามอารมณ์</a>
               </li>
               <li>
-                <a href='/'>Pricing</a>
+                <a href='/'>ชุมชน</a>
               </li>
-              <li>
+              {/* <li>
                 <a href='/'>Contact</a>
-              </li>
+              </li> */}
             </ul>
             <button className='toggle' onClick={() => setMobile(!Mobile)}>
               {Mobile ? <i className='fa fa-times'></i> : <i className='fa fa-bars'></i>}
@@ -40,7 +40,7 @@ const Header = () => {
             <i className='fa fa-search'></i>
             <i class='fas fa-bell'></i>
             <i className='fas fa-user'></i>
-            <button>Subscribe Now</button>
+            <button>เข้าสู่ระบบ</button>
           </div>
         </div>
       </header>

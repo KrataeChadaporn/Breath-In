@@ -12,44 +12,44 @@ const HomeCard = ({ item: { id, cover, name, rating, time, desc, starring, genre
           <div className='details row'>
             <h1>{name}</h1>
             <div className='rating flex'>
-              <div className='rate'>
+              {/* <div className='rate'>
                 <i className='fas fa-star'></i>
                 <i className='fa fa-star'></i>
                 <i className='fa fa-star'></i>
                 <i className='fa fa-star'></i>
                 <i className='fa fa-star-half'></i>
-              </div>
-              <label>{rating}(Imdb)</label>
+              </div> */}
+              {/* <label>{rating}(Imdb)</label>
               <span>GP</span>
-              <label>{time}</label>
+              <label>{time}</label> */}
             </div>
             <p>{desc}</p>
             <div className='cast'>
               <h4>
-                <span>Starring </span>
+                <span>ประเภท </span>
                 {starring}
               </h4>
               <h4>
-                <span>Genres </span>
+                <span>โรคจิตเวช </span>
                 {genres}
               </h4>
               <h4>
-                <span>Tags </span>
+                <span>เกี่ยวกับ </span>
                 {tags}
               </h4>
             </div>
             <button className='primary-btn'>
-              <i className='fas fa-play'></i> PLAY NOW
+              <i className='fas fa-play'></i> เล่นโหมดจำลอง
             </button>
           </div>
           <div className='palyButton row'>
             <Link to={`/singlepage/${id}`}>
               <button>
-                <div className='img'>
-                  <img src='./images/play-button.png' alt='' />
-                  <img src='./images/play.png' className='change' />
-                </div>
-                WATCH TRAILER
+              <div className='img'>
+              <img src='./images/play-button.png' alt='' />
+              <img src='./images/play.png' className='change' alt='' />
+              </div>
+                รับชมคำอธิบายเพิ่มเติม
               </button>
             </Link>
           </div>
