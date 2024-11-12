@@ -1,5 +1,6 @@
 import React from "react"
 import { Link } from "react-router-dom"
+import "./upcom.css" 
 
 const Ucard = ({ item: { id, cover, name, time } }) => {
   return (

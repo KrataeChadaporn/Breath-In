@@ -3,6 +3,7 @@ import Homes from "../components/homes/Homes"
 import Trending from "../components/trending/Trending"
 import Upcomming from "../components/upcoming/Upcomming"
 import Community from "../components/community/Community"
+import Blog from "../components/blog/Blog"
 import { latest, recommended, upcome,docter,posts } from "../dummyData"
 
 const HomePage = () => {
@@ -17,7 +18,7 @@ const HomePage = () => {
     <>
       <Homes />
       <Upcomming items={items} title='โหมดจำลอง' />
-      <Upcomming items={item} title='บทความ' />
+      <Blog items={item} title='บทความ' />
       <Trending />
       <Community items={{ doc, post }} title="ชุมชน" />
     </>

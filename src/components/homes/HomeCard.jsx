@@ -1,7 +1,9 @@
 import React from "react"
 import { Link } from "react-router-dom"
+import Simulator from "../selfhatrd/Simulator"
 
 const HomeCard = ({ item: { id, cover, name, rating, time, desc, starring, genres, tags, video } }) => {
+  
   return (
     <>
       <div className='box'>
@@ -12,16 +14,6 @@ const HomeCard = ({ item: { id, cover, name, rating, time, desc, starring, genre
           <div className='details row'>
             <h1>{name}</h1>
             <div className='rating flex'>
-              {/* <div className='rate'>
-                <i className='fas fa-star'></i>
-                <i className='fa fa-star'></i>
-                <i className='fa fa-star'></i>
-                <i className='fa fa-star'></i>
-                <i className='fa fa-star-half'></i>
-              </div> */}
-              {/* <label>{rating}(Imdb)</label>
-              <span>GP</span>
-              <label>{time}</label> */}
             </div>
             <p>{desc}</p>
             <div className='cast'>
@@ -38,9 +30,13 @@ const HomeCard = ({ item: { id, cover, name, rating, time, desc, starring, genre
                 {tags}
               </h4>
             </div>
-            <button className='primary-btn'>
-              <i className='fas fa-play'></i> เล่นโหมดจำลอง
-            </button>
+            {/* ปุ่มเล่นโหมดจำลอง */}
+          <button className="primary-btn-sim">
+            {/* ใช้ Link จาก react-router-dom เพื่อไปยังหน้าใหม่ */}
+            <Link to={`/simulator/${id}`}>
+              <i className="fas fa-play"></i> เล่นโหมดจำลอง
+            </Link>
+          </button>
           </div>
           <div className='palyButton row'>
             <Link to={`/singlepage/${id}`}>
