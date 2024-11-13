@@ -280,7 +280,7 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background-image: url('/Users/kratae/Documents/Hackathon/Breath In/public/images/3.jpg'); /* ใส่ URL ของรูปภาพพื้นหลัง */
+  background-image: url('/Users/kratae/Documents/Hackathon/Breath In/public/images/4.jpg'); /* ใส่ URL ของรูปภาพพื้นหลัง */
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -326,4 +326,78 @@
 
 .simustar-submit-btn:hover {
   background-color: #ff3b30;
+}
+
+.sad-mode {
+  position: relative;
+  background-image: url('/Users/kratae/Documents/Hackathon/Breath In/public/images/6.jpg'); /* เปลี่ยนเป็นที่อยู่ของรูปใหม่ */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  z-index: 1; /* ให้ภาพพื้นหลังอยู่เบื้องหลัง */
+}
+
+.sad-mode::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* background-color: rgba(116, 116, 117, 0.6);  */
+  /* สีฟิลเตอร์ที่ทับพื้นหลัง */
+  z-index: 0; /* ให้ background อยู่หลังข้อความและ textarea */
+}
+
+.sad-messages {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0; /* ให้ข้อความลอยอยู่หลัง textarea */
+}
+
+.floating-sad-message {
+  position: absolute;
+  font-weight: bold;
+  transition: color 0.5s ease;
+  z-index: 0; /* ให้ข้อความลอยอยู่หลัง textarea */
+}
+
+.floating-sad-message.red-1 {
+  color: hsl(0, 59%, 43%); /* Medium red */
+}
+
+.floating-sad-message.red-2 {
+  color: hsl(0, 70%, 50%); /* Bright red */
+}
+
+.floating-sad-message.red-3 {
+  color: hsl(0, 50%, 30%); /* Dark red */
+}
+
+.simustar-container {
+  position: relative;
+  z-index: 2; /* ให้ตัว container อยู่บนภาพพื้นหลัง */
+}
+
+.simustar-textarea {
+  position: relative;
+  z-index: 3; /* ตั้งให้ textarea อยู่ด้านบนสุด */
+}
+
+.simustar-heading {
+  position: relative;
+  z-index: 4; /* ตั้งให้ข้อความใน <h1> อยู่ด้านบนสุดเหนือข้อความลอย */
+  font-size: 2rem;
+  color: #fff;
+  text-align: center;
+  margin-bottom: 1rem;
 }

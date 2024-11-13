@@ -15,8 +15,7 @@ const Community = ({ title, items }) => {
               <div className="expert-card">
                 <img src={expert.image} alt={expert.name} />
                 <div className="expert-info">
-                  <h3>{expert.name}</h3>
-                  <p>คลินิค: {expert.clinic}</p>
+                  <h3 className="expert-name">{expert.name}</h3>
                   <p>จังหวัด: {expert.province}</p>
                 </div>
                 <div className="options">
