@@ -1,0 +1,155 @@
+.learn-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+
+.learn-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    
+    z-index: 1; /* ให้เคลือบพื้นหลัง */
+}
+
+.bg-1 {
+   
+    background-image: url('/Users/kratae/Documents/Hackathon/Breath In/public/images/12.jpg');
+  }
+  
+  .bg-2 {
+    
+    background-image: url('/Users/kratae/Documents/Hackathon/Breath In/public/images/13.jpg');
+  }
+  
+  .bg-3 {
+    
+    background-image: url('/Users/kratae/Documents/Hackathon/Breath In/public/images/14.jpg');
+  }
+  
+  .bg-4 {
+    
+    background-image: url('/Users/kratae/Documents/Hackathon/Breath In/public/images/15.jpg');
+  }
+  .bg-learning-started {
+    background-image: url('/Users/kratae/Documents/Hackathon/Breath In/public/images/16.jpg');
+  }
+
+  
+  .learn-content {
+    text-align: center;
+    font-size: 2.3rem;
+    font-weight: bold;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+    padding: 20px;
+    border-radius: 10px;
+    color: white;
+    z-index: 1;
+  }
+  
+  .learn-text {
+    font-size: 40px;
+    position: relative; /* หรือ absolute */
+    top: -100px; /* ขยับขึ้นด้านบน */
+  }
+  
+  .learn-btn {
+    margin-top: 50px;
+    padding: 20px 50px;
+    font-size: 30px;
+    color: rgb(7, 7, 7);
+    background-color: #DBE9FF;
+    border: 1px solid #000000; /* เส้นขอบสีน้ำเงิน */
+    border-radius: 40px;
+    cursor: pointer;
+  }
+  
+  .learn-btn:hover {
+    color: rgb(255, 255, 255);
+    background-color: #5c84af;
+  }
+  .button-group-larn {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end; /* ปุ่มเรียงอยู่ด้านขวา */
+    gap: 30px; /* เพิ่มระยะห่างระหว่างปุ่ม */
+  }
+  
+  .learn-option-btn {
+    padding: 20px 5px;
+    font-size: 2rem;
+    background-color: #FFE8B5;
+    color: rgb(0, 0, 0);
+    border: 1px solid black;
+    border-radius: 40px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    max-width: 500px;
+    text-align: center;
+  }
+  
+  .learn-option-btn:hover {
+    background-color: #dbd099; /* เพิ่มเอฟเฟกต์ hover */
+  }
+  
+ 
+
+  /* กลุ่มปุ่มขั้นตอนสุดท้าย */
+
+
+  .learn-text-final{
+    font-size: 40px;
+    position: relative; 
+    top: 50px;
+  }
+  .bg-final-step {
+    
+    background-image: url('/Users/kratae/Documents/Hackathon/Breath In/public/images/17.jpg');
+  }
+
+.button-group-final {
+    
+    position: relative;
+    height: 100vh; /* ใช้ตำแหน่งเต็มหน้าจอ */
+  }
+  
+  .final-option-btn {
+    position: absolute;
+    padding: 15px 30px;
+    font-size: 1.5rem;
+    background-color: #b1cfee;
+    color: #ffffff;
+    border: 1px solid rgb(0, 0, 0);
+    border-radius: 30px;
+    cursor: pointer;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+  }
+
+  .final-option-btn:hover{
+    background-color: #6a7dce; 
+  }
+  
+  /* ตำแหน่งปุ่ม */
+  .top-left {
+    top: 10%;
+    left: -50%;
+  }
+  
+  .center {
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  
+  .bottom-right {
+    bottom: 60%;
+    right: -50%;
+  }

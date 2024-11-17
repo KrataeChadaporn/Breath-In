@@ -273,6 +273,7 @@
 .restart-btn:hover {
   background-color: #C0392B;
 }
+/*เฟรม1 */
 /* พื้นหลังเต็มหน้าจอ */
 .simustar-container {
   display: flex;
@@ -321,6 +322,7 @@
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  z-index: 5;
   transition: background-color 0.3s ease;
 }
 
@@ -401,3 +403,59 @@
   text-align: center;
   margin-bottom: 1rem;
 }
+
+/* เปลี่ยนหน้า */
+.final-mode {
+  background-image: url('/Users/kratae/Documents/Hackathon/Breath In/public/images/7.jpg'); 
+}
+.final-question {
+  text-align: center;
+  color: #fff;
+  z-index: 5;
+  position: absolute;
+  top: 10%; /* ตำแหน่งด้านบน */
+  width: 100%;
+  margin-bottom: 20px;
+  font-weight: bold;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+}
+
+.final-question h1 {
+  font-size: 2rem;
+  color: #fff;
+}
+.button-group-simstar {
+  position: fixed;
+  top: 50%; /* กึ่งกลางแนวตั้ง */
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between; /* ปุ่มแยกไปที่ขอบซ้ายและขวา */
+  align-items: center;
+  transform: translateY(-50%); /* จัดตำแหน่งตรงกลางในแนว Y */
+  padding: 0 250px; /* เว้นระยะห่างเล็กน้อยจากขอบ */
+}
+
+.left-button-simstar, .right-button-simstar {
+  padding: 15px 40px; /* ขยายขนาดปุ่ม */
+  font-size: 1.5rem; /* เพิ่มขนาดตัวอักษร */
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+
+.left-button-simstar:hover {
+  background-color: #ff3b30; /* เปลี่ยนสีเมื่อ hover */
+}
+
+.right-button-simstar {
+  background-color: #ff3b30; /* สีเขียว */
+}
+
+.right-button-simstar:hover {
+  background-color: #b01818;
+}
+

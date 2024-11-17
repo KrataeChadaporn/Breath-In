@@ -1,0 +1,183 @@
+/* กำหนดพื้นฐานให้ container อยู่กลางหน้าจอ */
+.final-self-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    text-align: center;
+    background-image: url('/Users/kratae/Documents/Hackathon/Breath In/public/images/25.jpg');
+    background-size: cover; /* ปรับขนาดพื้นหลัง */
+  }
+  
+  /* สไตล์ข้อความ */
+  .final-h {
+    text-align: center;
+    font-size: 2.3rem;
+    font-weight: bold;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+    padding: 20px;
+    border-radius: 10px;
+    color: white;
+    font-size: 40px;
+    position: relative;
+    top: -200px;
+  }
+  
+  /* ตั้งค่าสำหรับ heart-container */
+  .heart-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    position: relative; /* เพิ่ม position relative */
+  }
+  
+  /* รูปหัวใจที่สร้างจาก CSS */
+  .heart {
+    position: relative;
+    height: 150px;
+    width: 150px;
+    background: #FFE6F5; /* สีของหัวใจ */
+    transform: rotate(-45deg);
+    box-shadow: 15px 5px 150px 20px #FF9BDD;
+    animation: heart 0.6s linear infinite;
+  }
+  
+  /* การสร้างลักษณะหัวใจ */
+  .heart::before,
+  .heart::after {
+    content: "";
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    background: #FFE6F5;
+    border-radius: 50%;
+  }
+  
+  .heart::before {
+    top: 0%;
+
+  }
+  
+  .heart::after {
+    top: -80px;
+    left: 0;
+  }
+  
+  /* การตั้งค่า animation สำหรับการกระพริบ */
+  @keyframes heart {
+    0% {
+      transform: rotate(-45deg) scale(1.07);
+    }
+    80% {
+      transform: rotate(-45deg) scale(1);
+    }
+    100% {
+      transform: rotate(-45deg) scale(0.8);
+    }
+  }
+  
+  /* ตั้งค่าตำแหน่งข้อความ "ข้อความเด้งออกมาจากหัวใจ" */
+  .heart-text {
+    position: absolute;
+    transform: translateX(-50%) scale(0.8); /* จัดตำแหน่งกลาง */
+    font-size: 1.7rem; /* ขนาดฟอนต์ที่ใหญ่ขึ้น */
+    color: #913753;
+    font-weight: bold;
+    z-index: 4;
+    opacity: 0;
+    animation: messageAnimation 1s forwards; /* การทำให้ข้อความปรากฏ */
+    width: 200px; /* กำหนดความกว้าง */
+    word-wrap: break-word; /* ทำให้ข้อความยืดหยุ่นและห่อหุ้มได้ */
+  }
+  
+  /* แอนิเมชันให้ข้อความเด้งออกมา */
+  @keyframes messageAnimation {
+    0% {
+      opacity: 0;
+      transform: translateY(-50%) scale(0); /* เริ่มจากหายไป */
+    }
+    50% {
+      opacity: 1;
+      transform: translateY(-150%) scale(1.2); /* ข้อความขยายขึ้นและเด้ง */
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(-100%) scale(1); /* ข้อความอยู่ตำแหน่งด้านบนสุดของหัวใจ */
+    }
+  }
+  .tellself-container {
+   
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 90vh;
+    text-align: center;
+    background-image: url('/Users/kratae/Documents/Hackathon/Breath In/public/images/21.jpg');
+    background-size: cover; /* ปรับขนาดพื้นหลัง */
+  }
+
+  .phone-buttons {
+    display: grid;
+    grid-template-columns: repeat(3, 90px); /* สร้าง 3 คอลัมน์ */
+    gap: 15px; /* ช่องว่างระหว่างปุ่ม */
+    justify-items: center; /* จัดให้ปุ่มอยู่กลางคอลัมน์ */
+    align-items: center; /* จัดให้ปุ่มอยู่กลางแถว */
+    grid-template-rows: repeat(5, 100px); /* สร้าง 5 แถว */
+    transform: translate(15px, 80px); /* ขยับไปทางขวาและลง */
+  }
+  
+  
+  .phone-button {
+    width: 85px;
+    height: 85px;
+    border-radius: 50%; /* ทำให้ปุ่มเป็นวงกลม */
+    background-color: #a4a4a5; /* สีพื้นหลังของปุ่ม */
+    color: rgb(0, 0, 0); /* สีข้อความในปุ่ม */
+    font-size: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+ 
+ 
+  .call-button {
+    width: 85px;
+    height: 85px;
+    border-radius: 50%; /* ทำให้ปุ่มเป็นวงกลม */
+    background-color: #28a745; /* สีเขียวสำหรับปุ่ม Call */
+    color: white;
+    font-size: 24px;
+    border: none;
+    cursor: pointer;
+    display: flex; /* ใช้ flex เพื่อจัดตำแหน่งข้อความ */
+    justify-content: center;
+    align-items: center;
+    transform: translate(10px, -20px);
+    
+}
+
+.call-button:hover {
+    background-color: #164220; /* สีเขียวเข้มเมื่อ hover */
+}
+  .phone-button:hover {
+    background-color: #ed4242; /* เปลี่ยนสีเมื่อ hover */
+  }
+  .phone-display h2 {
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    transform: translate(10px, 100px);
+  }
+  
+  .phone-display p {
+    font-size: 16px;
+    color: #d8587e;
+    transform: translate(10px, 80px);
+  }

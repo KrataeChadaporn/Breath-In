@@ -1,0 +1,165 @@
+/* SimuLast Container */
+.simulast-container {
+  display: flex;
+  justify-content: flex-end; /* จัดเนื้อหาไปทางขวา */
+  align-items: center;       /* จัดให้อยู่กึ่งกลางในแนวตั้ง */
+  height: 100vh;
+  background-image: url('/Users/kratae/Documents/Hackathon/Breath In/public/images/9.jpg');
+  background-size: cover;
+  background-position: center;
+  padding: 20px;
+  font-family: 'Arial', sans-serif;
+  color: #151515;
+  position: relative;
+  background-color: rgba(0, 0, 0, 0.7);
+  background-blend-mode: overlay;
+  transition: background-image 0.3s ease; /* เพิ่มการเปลี่ยนแปลงพื้นหลัง */
+  overflow: hidden; /* ไม่ให้มีการเลื่อน */
+}
+
+.stage-changed {
+  display: flex;
+  /* flex-direction: column; */
+  /* align-items: stretch; */
+  gap: 40px;
+  /* width: 100%; */
+  /* max-width: 500px; */
+  /* position: absolute; */
+  /* top: 50%; */
+  /* transform: translateY(-50%); */
+  /* transition: transform 0.3s ease; */
+  flex-wrap: wrap;
+  align-content: space-around;
+  justify-content: space-around;
+  background-image: url('/Users/kratae/Documents/Hackathon/Breath In/public/images/10.jpg');
+
+}
+
+/* Message */
+.message {
+  color: white;
+  font-size: 2.3rem;
+  font-weight: bold;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+  position: absolute;
+  top: 1px;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: 20px;
+  margin-top: 30px;
+  transition: transform 0.3s ease, opacity 0.3s ease; /* เพิ่มการเคลื่อนไหว */
+}
+
+.message.stage-changed {
+  transform: translateX(-50%) translateY(-20px); /* ขยับขึ้นเมื่อสถานะเปลี่ยน */
+  opacity: 0.8;
+}
+
+/* Button Group */
+.button-group-simlast {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end; /* จัดกลุ่มปุ่มไปด้านขวา */
+  gap: 40px;
+  width: 100%;
+  max-width: 500px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  transition: transform 0.3s ease; /* เพิ่มการเคลื่อนไหว */
+}
+
+.button-group-simlast.stage-changed {
+  flex-direction: row; /* เปลี่ยนเป็นแนวนอน */
+  justify-content: space-between;
+  width: 80%;
+}
+
+/* Buttons */
+.right-button-simlast {
+  padding: 20px 10px;
+  font-size: 2.0rem;
+  background-color: #ffffff;
+  color: rgb(0, 0, 0);
+  border: none;
+  border-radius: 40px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  width: 100%;
+  max-width: 500px;
+  text-align: center;
+}
+
+.right-button-simlast:hover {
+  background-color: #d32f2f;
+}
+
+.right-button-simlast:focus {
+  outline: none;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* For left button */
+.left-button-after {
+  align-self: flex-start;
+}
+
+/* For center button */
+.center-button-after {
+  align-self: center;
+}
+
+/* For right button */
+.right-button-after {
+  align-self: flex-end;
+}
+
+
+.simulast-container.final-stage {
+  background-image: url('/Users/kratae/Documents/Hackathon/Breath In/public/images/11.jpg'); /* เส้นทางภาพในโฟลเดอร์ public */
+  background-size: cover; /* ปรับภาพให้เต็ม */
+  background-position: center; /* จัดภาพให้อยู่ตรงกลาง */
+  background-repeat: no-repeat; /* ป้องกันการทำซ้ำของภาพ */
+}
+
+
+.final-question {
+  
+  margin-top: 30px;
+  text-align: center; /* จัดข้อความให้ตรงกลาง */
+  
+}
+
+.btn-group-final {
+  display: flex;
+  justify-content: center; /* จัดตำแหน่งปุ่มในแนวนอน */
+  gap: 50px; /* ระยะห่างระหว่างปุ่ม */
+  position: relative;
+  ;
+}
+
+.yes-btn, .no-btn {
+  border-radius: 40px;
+  margin-top: 60px;
+  padding: 20px 20px;
+  font-size: 20px;
+  cursor: pointer;
+  position: relative; /* ใช้ position relative เพื่อขยับในกรอบของ parent */
+  transition: transform 0.2s ease; /* เพิ่มการเคลื่อนไหวเล็กน้อย */
+  min-width: 120px; /* กำหนดขนาดของปุ่ม */
+  text-align: center;
+}
+
+/* สไตล์สำหรับปุ่ม "no-btn" */
+.no-btn {
+  background-color: rgb(0, 0, 0);
+  color: white;
+  border: none;
+}
+
+/* สไตล์สำหรับปุ่ม "yes-btn" */
+.yes-btn {
+  background-color: rgb(251, 1, 46);
+  color: white;
+  border: none;
+}
