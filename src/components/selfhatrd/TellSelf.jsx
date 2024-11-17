@@ -45,7 +45,7 @@ const TellSelf = () => {
         ))}
       </div>
        {/* ปุ่ม Call */}
-       <Link to="/" className="call-button">
+       <Link to="/new-mood-assessment" className="call-button">
         Call
       </Link>
     </div>

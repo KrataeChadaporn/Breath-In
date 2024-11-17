@@ -1,0 +1,215 @@
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { createUserWithEmailAndPassword } from "firebase/auth"; // Import Firebase function
+import { auth } from "/Users/kratae/Documents/Hackathon/Breath In/src/firebaseConfig.js"; // Firebase auth import
+import { setDoc, doc } from "firebase/firestore"; // Import Firestore methods
+import { db } from "/Users/kratae/Documents/Hackathon/Breath In/src/firebaseConfig.js"; // Import Firestore instance
+import "./login.css";
+
+const Register = () => {
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    birthDate: "",
+    phone: "",
+    email: "",
+    password: "",
+  });
+
+  const [error, setError] = useState(null); // State for handling errors
+  const [showConsent, setShowConsent] = useState(false); // State for displaying the consent modal
+  const [consentGiven, setConsentGiven] = useState(false); // State for tracking if consent is given
+  const [modalConsentGiven, setModalConsentGiven] = useState(false); // Track consent in modal
+  const navigate = useNavigate(); 
+
+  // Handle form data changes
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleConsent = () => {
+    setShowConsent(true); // Show the consent modal
+  };
+
+  const closeConsent = () => {
+    if (modalConsentGiven) {
+      setShowConsent(false); // Hide the consent modal if checkbox is ticked
+      setConsentGiven(true); // Automatically check the main form checkbox
+    } else {
+      alert("กรุณายืนยันแบบแสดงความยินยอมก่อนปิดหน้าต่างนี้");
+    }
+  };
+
+  const handleCheckboxChange = () => {
+    setConsentGiven(!consentGiven); // Toggle consent checkbox
+  };
+
+  const handleModalCheckboxChange = () => {
+    setModalConsentGiven(!modalConsentGiven); // Toggle consent checkbox in modal
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError(null); // เคลียร์ข้อผิดพลาดก่อนการส่งคำขอ
+  
+    // ตรวจสอบอีเมล
+    if (!formData.email || !/\S+@\S+\.\S+/.test(formData.email)) {
+      setError("โปรดกรอกอีเมลที่ถูกต้อง");
+      return;
+    }
+  
+    // ตรวจสอบรหัสผ่าน
+    if (formData.password.length < 6) {
+      setError("รหัสผ่านต้องมีความยาวอย่างน้อย 6 ตัวอักษร");
+      return;
+    }
+  
+    try {
+      // สร้างบัญชีผู้ใช้ใน Firebase Authentication
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        formData.email,
+        formData.password
+      );
+  
+      const user = userCredential.user;
+  
+      // เพิ่มข้อมูลผู้ใช้เพิ่มเติมใน Firestore
+      await setDoc(doc(db, "users", user.uid), {
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        birthDate: formData.birthDate,
+        phone: formData.phone,
+        email: formData.email,
+        createdAt: new Date(),
+      });
+  
+      alert("ลงทะเบียนสำเร็จ!");
+  
+      // นำทางไปที่หน้าล็อกอินหลังจากสมัครเสร็จ
+      navigate('/login'); // เปลี่ยนเส้นทางไปหน้าล็อกอิน
+  
+    } catch (error) {
+      console.error("Error during registration:", error);
+      setError(error.message || "เกิดข้อผิดพลาดในการลงทะเบียน กรุณาลองอีกครั้ง");
+    }
+  };
+  
+  
+  return (
+    <div className="auth-container">
+      <div className="auth-image">
+        <img src="/images/23.jpg" alt="Register Illustration" />
+      </div>
+
+      <div className="auth-form">
+        <h2>สมัครสมาชิก</h2>
+        {error && <p style={{ color: "red" }}>{error}</p>}
+        <form onSubmit={handleSubmit}>
+          <label>ชื่อ</label>
+          <input
+            type="text"
+            name="firstName"
+            placeholder="กรอกชื่อของคุณ"
+            required
+            onChange={handleChange}
+          />
+          <label>นามสกุล</label>
+          <input
+            type="text"
+            name="lastName"
+            placeholder="กรอกนามสกุลของคุณ"
+            required
+            onChange={handleChange}
+          />
+          <label>วัน/เดือน/ปีเกิด</label>
+          <input
+            type="date"
+            name="birthDate"
+            required
+            onChange={handleChange}
+          />
+          <label>เบอร์โทรติดต่อ</label>
+          <input
+            type="tel"
+            name="phone"
+            placeholder="กรอกเบอร์โทรศัพท์"
+            required
+            onChange={handleChange}
+          />
+          <label>อีเมล</label>
+          <input
+            type="email"
+            name="email"
+            placeholder="กรอกอีเมลของคุณ"
+            required
+            onChange={handleChange}
+          />
+          <label>รหัสผ่าน</label>
+          <input
+            type="password"
+            name="password"
+            placeholder="กรอกรหัสผ่านของคุณ"
+            required
+            onChange={handleChange}
+          />
+
+          <div className="consent-container">
+            <label htmlFor="consent">
+              <span onClick={handleConsent} className="consent-link">
+                ยอมรับแบบแสดงความยินยอม
+              </span>
+            </label>
+          </div>
+
+          <button type="submit" className="auth-button">
+            ยืนยัน
+          </button>
+        </form>
+        <p>
+          หากคุณมีบัญชีอยู่แล้ว{" "}
+          <Link to="/login" className="auth-link">
+            คลิกตรงนี้!!!
+          </Link>
+        </p>
+      </div>
+
+      {/* Consent Modal */}
+      {showConsent && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h2>แบบแสดงความยินยอมให้เก็บ รวบรวม ใช้ เปิดเผยข้อมูล</h2>
+            <p>
+              ข้าพเจ้าตกลงยินยอมให้มหาวิทยาลัยเชียงใหม่ เก็บรวบรวม ใช้ หรือ เปิดเผยข้อมูลส่วนบุคคลของข้าพเจ้าที่มีอยู่กับแบบประเมินต่าง ๆ ของ CMU Mind ซึ่งต่อไปนี้ในหนังสือให้ความยินยอมฉบับนี้เรียกว่า
+              “ผู้ควบคุมข้อมูลส่วนบุคคล”ภายใต้เงื่อนไข ดังต่อไปนี้
+            </p>
+            <ul>
+            <li>1. วัตถุประสงค์ของการเก็บรวบรวม ใช้ หรือเปิดเผยข้อมูลส่วนบุคคล เพื่อประโยชน์ต่อกระบวนการประเมินสุขภาพจิตเบื้องต้นและคัดกรองความเสี่ยงต่อปัญหาสุขภาพจิต และติดตามดูแลช่วยเหลือผู้ที่เสี่ยงมีปัญหาสุขภาพจิต หากภายหลังมีการเปลี่ยนแปลงวัตถุประสงค์ในการเก็บรวบรวมข้อมูลส่วนบุคคล ผู้ให้บริการจะประกาศให้ผู้ใช้บริการทราบ</li>
+              <li>2. “ข้อมูลส่วนบุคคล” หมายถึง ข้อมูลเกี่ยวกับบุคคลซึ่งทำให้สามารถระบุตัวบุคคลนั้นได้ไม่ว่าทางตรงหรือทางอ้อม เช่น ชื่อ สกุล เพศ อายุ ที่อยู่ เบอร์โทรศัพท์ รหัสนักศึกษา ปัจจัยความเสี่ยง (เช่น ความคิดฆ่าตัวตาย การทำร้ายตัวเอง เป็นต้น) ข้อมูลภาวะสุขภาพ</li>
+              <li>3. มหาวิทยาลัยเชียงใหม่ ผู้ให้บริการ รวบรวม จัดเก็บ ใช้ ข้อมูล ซึ่งประกอบด้วย ข้อมูลส่วนบุคคล ข้อมูลการประเมินสุขภาพจิตเบื้องต้น ได้แก่ ประเมินภาวะซึมเศร้า ประเมินความเสี่ยงต่อการฆ่าตัวตายประเมินพลังใจ ประเมินภาวะความเครียด และแบบประเมินต่าง ๆ ด้านสุขภาพจิต ซึ่งเป็นการประเมินที่ไม่มีค่าใช้จ่ายใดๆ เพื่อประโยชน์ในการจัดทำฐานข้อมูล พัฒนาระบบและกลไกการดูแลนักศึกษาและบุคลากรด้านสุขภาพจิต และติดตามดูแลช่วยเหลือผู้ที่เสี่ยงมีปัญหาสุขภาพจิต</li>
+              <li>4. ผู้ใช้บริการมีสิทธิถอนความยินยอมเกี่ยวกับข้อมูลส่วนบุคคลของผู้ใช้บริการเมื่อใดก็ได้ เว้นแต่การถอนความยินยอมนั้นจะกระทบต่อการให้บริการหรืออยู่นอกเหนือการควบคุมของผู้ให้บริการ</li>
+              <li>5. การตกลงให้เก็บ รวบรวม ใช้ เปิดเผยข้อมูลส่วนบุคคลนี้มีผลใช้บังคับตามระยะเวลาที่กฎหมายกำหนดไว้</li>
+              <li>6. สิทธิของผู้ใช้บริการเกี่ยวกับข้อมูลส่วนบุคคลที่เกี่ยวกับการเพิกถอน การขอเข้าถึงและรับสำเนาข้อมูลส่วนบุคคล การคัดค้านการเก็บข้อมูล ใช้หรือเปิดเผย สิทธิในการเคลื่อนย้ายข้อมูล สิทธิในการลบข้อมูล สิทธิในการระงับการใช้ข้อมูล ให้เป็นไปตามนโยบายการคุ้มครองข้อมูลส่วนบุคคลของมหาวิทยาลัยเชียงใหม่และตามที่กฎหมายกำหนด</li>
+              <li>7. ผู้ใช้บริการรับทราบว่า ผู้ใช้บริการสามารถติดต่อผู้ให้บริการ ผ่านช่องทางไปรษณีย์อิเล็กทรอนิกส์: cmumind@gmail.com</li>
+            </ul>
+            <div className="modal-checkbox-container">
+              <input
+                type="checkbox"
+                id="modal-consent"
+                checked={modalConsentGiven}
+                onChange={handleModalCheckboxChange}
+              />
+              <label htmlFor="modal-consent">ยอมรับและเข้าใจเงื่อนไขข้างต้น</label>
+            </div>
+            <button onClick={closeConsent} className="auth-button">
+              ปิด
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default Register;

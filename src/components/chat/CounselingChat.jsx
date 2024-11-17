@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import "./commu.css";
+import "./chat.css";
 import { db, auth } from "../../firebaseConfig";
 import {
   collection,
@@ -13,19 +13,19 @@ import {
   doc,
   getDoc,
 } from "firebase/firestore";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom"; // ใช้ useHistory แทน useNavigate
 
 const Community = () => {
-  const [experts, setExperts] = useState([]);
-  const [posts, setPosts] = useState([]);
-  const [newPost, setNewPost] = useState("");
+  const [experts, setExperts] = useState([]); // ผู้เชี่ยวชาญ
+  const [posts, setPosts] = useState([]); // โพสต์ของชุมชน
+  const [newPost, setNewPost] = useState(""); // โพสต์ใหม่
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
+  const history = useNavigate
 
-  const currentUser = auth.currentUser;
+  const currentUser = auth.currentUser; // ผู้ใช้ปัจจุบัน
 
-  // Fetch experts from Firestore
+  // ดึงข้อมูลผู้เชี่ยวชาญ
   useEffect(() => {
     const fetchExperts = async () => {
       setLoading(true);
@@ -48,7 +48,7 @@ const Community = () => {
     fetchExperts();
   }, []);
 
-  // Fetch community posts from Firestore
+  // ดึงข้อมูลโพสต์
   useEffect(() => {
     const fetchPosts = async () => {
       const postQuery = query(
@@ -61,11 +61,13 @@ const Community = () => {
             const post = { id: docSnapshot.id, ...docSnapshot.data() };
             if (post.authorId) {
               try {
+                // ตรวจสอบ `authorId` ใน `users` ก่อน
                 const userRef = doc(db, "users", post.authorId);
                 const userSnap = await getDoc(userRef);
                 if (userSnap.exists()) {
                   post.authorName = userSnap.data().name || "ไม่ระบุชื่อ";
                 } else {
+                  // หากไม่พบใน `users` ให้ตรวจสอบใน `experts`
                   const expertRef = doc(db, "experts", post.authorId);
                   const expertSnap = await getDoc(expertRef);
                   post.authorName = expertSnap.exists()
@@ -90,11 +92,11 @@ const Community = () => {
     fetchPosts();
   }, []);
 
-  // Function to start a conversation
+  // ฟังก์ชันเริ่มต้นการสนทนากับผู้เชี่ยวชาญ
   const startConversation = async (expertId) => {
     if (!currentUser) {
       alert("กรุณาเข้าสู่ระบบก่อน");
-      navigate("/login");
+      history.push("/login"); // ใช้ history.push แทน navigate
       return;
     }
 
@@ -104,30 +106,35 @@ const Community = () => {
       where("userId", "==", currentUser.uid),
       where("expertId", "==", expertId)
     );
+    const existingConversation = await getDocs(q);
 
-    try {
-      const existingConversation = await getDocs(q);
+    if (existingConversation.empty) {
+      await addDoc(conversationRef, {
+        userId: currentUser.uid,
+        expertId,
+        lastMessage: "",
+        timestamp: serverTimestamp(),
+      });
+    }
 
-      if (existingConversation.empty) {
-        // If no conversation exists, create a new one
-        await addDoc(conversationRef, {
-          userId: currentUser.uid,
-          expertId,
-          lastMessage: "",
-          timestamp: serverTimestamp(),
-        });
-      }
+    history.push(`/chat/${expertId}`); // ใช้ history.push แทน navigate
+  };
 
-      // After checking or creating the conversation, redirect to the chat page
-      navigate(`/chat/${expertId}`);
-    } catch (error) {
-      console.error("Error checking or creating conversation:", error);
+  // ฟังก์ชันเพิ่มโพสต์ใหม่
+  const handleAddPost = async () => {
+    if (newPost.trim()) {
+      await addDoc(collection(db, "broadcasts"), {
+        text: newPost,
+        createdAt: serverTimestamp(),
+        authorId: currentUser?.uid || null,
+      });
+      setNewPost("");
     }
   };
 
   return (
     <div className="community-container">
-      {/* Experts Section */}
+      {/* ส่วนคุยกับผู้เชี่ยวชาญ */}
       <div className="expert-section">
         <h2>คุยกับผู้เชี่ยวชาญ</h2>
         {loading ? (
@@ -156,7 +163,7 @@ const Community = () => {
         )}
       </div>
 
-      {/* Community Posts Section */}
+      {/* ส่วนโพสต์ของชุมชน */}
       <div className="community-section">
         <h2>โพสต์ของชุมชน</h2>
         <div>

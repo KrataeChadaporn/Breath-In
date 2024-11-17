@@ -1,0 +1,47 @@
+.blogread-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+  color: #333;
+  line-height: 1.6;
+}
+
+.blogread-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.blogread-image {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.blogread-title {
+  font-size: 2.5rem;
+  margin: 20px 0 10px;
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+.blogread-date {
+  font-size: 1rem;
+  color: #7f8c8d;
+}
+
+.blogread-content section {
+  margin-bottom: 20px;
+}
+
+.blogread-content h2 {
+  font-size: 1.8rem;
+  margin-bottom: 10px;
+  color: #2980b9;
+}
+
+.blogread-content p {
+  font-size: 1rem;
+  margin: 0;
+  text-align: justify;
+}

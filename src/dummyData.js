@@ -57,45 +57,39 @@ export const upcome = [
     id: 1,
     cover: "../images/home1.jpg",
     name: "โรคเกลียดตัวเอง",
-    time: "2hr : 38mins",
+    time: "เรียนรู้โรคทางจิตเวช",
   },
   {
     id: 2,
     cover: "../images/home2.jpg",
     name: "โรคย้ำคิดย้ำทำ",
-    time: "2hr : 38mins",
+    time: "เรียนรู้โรคทางจิตเวช",
   },
   {
     id: 3,
     cover: "../images/upcome/u3.jpg",
-    name: "Another Danger",
-    time: "2hr : 38mins",
+    name: "โรคอารมณ์สองขั้ว",
+    time: "เรียนรู้โรคทางจิตเวช",
   },
   {
     id: 4,
     cover: "../images/upcome/u4.jpg",
-    name: "One Man Army",
-    time: "2hr : 38mins",
-  },
-  {
-    id: 5,
-    cover: "../images/upcome/u5.jpg",
-    name: "Jumbo Queen",
-    time: "2hr : 38mins",
-  },
+    name: "โรคซึมเศร้า",
+    time: "เรียนรู้โรคทางจิตเวช",
+  }
 ]
 export const latest = [
   {
     id: 1,
-    cover: "../images/upcome/u6.png",
-    name: "King of Jungle",
-    time: "2hr : 38mins",
+    cover: "../images/blog/3.jpg",
+    name: "เกลียดตัวเอง แค่อารมณ์หรือโรค",
+    time: "นายแพทย์สมจิต ร่มรฤดี",
   },
   {
     id: 2,
     cover: "../images/upcome/u7.jpg",
-    name: "The illusion",
-    time: "2hr : 38mins",
+    name: "ผ่อนคลายอารมณ์ง่ายๆ เพียงแค่นั่งสมาธิ",
+    time: "แพทย์หญิง น้ำหวาน ดวงขวัญแก้ว",
   },
   {
     id: 3,
@@ -240,3 +234,43 @@ export const questions = [
   "8. คุณเคลื่อนไหวช้าลง หรือพูดช้าลงบ่อยแค่ไหน?",
   "9. คุณรู้สึกว่าคุณอยากทำร้ายตัวเองหรืออยากตายบ่อยแค่ไหน?",
 ];
+
+export const blogData = [
+  {
+    id: 1,
+    category: "blog", // หมวดหมู่
+    name: "เกลียดตัวเอง แค่อารมณ์หรือโรค?",
+    cover: "../images/blog/3.jpg", // ลิงก์รูปภาพ
+    time: "18 พฤศจิกายน 2024",
+    part1: "React เป็นไลบรารีที่ได้รับความนิยมสูงในวงการพัฒนาเว็บ เนื่องจากความสามารถในการจัดการ DOM ที่มีประสิทธิภาพ...",
+    part2: "หนึ่งในเหตุผลที่ React ได้รับความนิยมคือการใช้งานง่าย และสามารถพัฒนาแอปพลิเคชันแบบ SPA ได้อย่างรวดเร็ว...",
+    part3: "ในสรุป, React เป็นเครื่องมือที่ทรงพลังสำหรับนักพัฒนาเว็บ..."
+  },
+  {
+    id: 2,
+    category: "blog",
+    name: "วิธีเริ่มต้นกับ JavaScript",
+    cover: "https://via.placeholder.com/800x400",
+    time: "10 พฤศจิกายน 2024",
+    part1: "JavaScript เป็นภาษาหลักที่ถูกใช้ในเว็บแอปพลิเคชันทั้ง client-side และ server-side...",
+    part2: "คุณสามารถเริ่มต้นได้ง่าย ๆ ด้วยการศึกษาพื้นฐาน เช่น การเขียนฟังก์ชัน การใช้งานตัวแปร และคำสั่ง if-else...",
+    part3: "JavaScript เป็นภาษาที่เรียนรู้ได้ง่ายและเป็นจุดเริ่มต้นที่ดีสำหรับนักพัฒนามือใหม่..."
+  },
+  {
+    id: 3,
+    category: "latest", // หมวดหมู่
+    name: "เกลียดตัวเอง แค่อารมณ์หรือโรค",
+    cover: "/Users/kratae/Documents/Hackathon/Breath In/public/images/blog/3.jpg",
+    time: "นายแพทย์สมจิต ร่มรฤดี",
+    description: "บทความเกี่ยวกับการเข้าใจภาวะอารมณ์ที่ส่งผลต่อจิตใจ...",
+  },
+  {
+    id: 4,
+    category: "latest",
+    name: "ผ่อนคลายอารมณ์ง่ายๆ เพียงแค่นั่งสมาธิ",
+    cover: "../images/upcome/u7.jpg",
+    time: "แพทย์หญิง น้ำหวาน ดวงขวัญแก้ว",
+    description: "เคล็ดลับการฝึกสมาธิเพื่อความผ่อนคลายจิตใจและร่างกาย...",
+  }
+];
+
