@@ -10,9 +10,9 @@ const Header = () => {
   const [Mobile, setMobile] = useState(false);
   const [userName, setUserName] = useState("");
   const [userRole, setUserRole] = useState("");
-  const [loading, setLoading] = useState(true); // สถานะ Loading
+  const [loading, setLoading] = useState(true); 
   const navigate = useNavigate();
-  const { currentUser } = useContext(AuthContext); // ดึง currentUser จาก AuthContext
+  const { currentUser } = useContext(AuthContext); 
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -59,7 +59,7 @@ const Header = () => {
   };
 
   if (loading) {
-    return <div>กำลังโหลด...</div>; // หรือแสดง Loader ตามความเหมาะสม
+    return <div>Lodeing</div>; // หรือแสดง Loader ตามความเหมาะสม
   }
 
   return (
@@ -77,7 +77,7 @@ const Header = () => {
               <Link to="/">หน้าหลัก</Link>
             </li>
             <li>
-              <Link to="/menu">เมนู</Link>
+              <Link to="/menu">โหมดจำลอง</Link>
             </li>
             {currentUser && (
               <>
@@ -97,7 +97,7 @@ const Header = () => {
         <div className="account flexSB">
           {currentUser ? (
             <>
-              <span className="username">คุณ: {userName}</span>
+              <span className="username-hearder"> {userName}</span>
               {userRole === "expert" && (
                 <button
                   onClick={() => navigate("/expert-chat")}
@@ -112,7 +112,7 @@ const Header = () => {
             </>
           ) : (
             <Link to="/login">
-              <button>เข้าสู่ระบบ</button>
+              <button className="logout-button">เข้าสู่ระบบ</button>
             </Link>
           )}
         </div>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './self.css';
 import { Link } from 'react-router-dom';
-import useAudio from '../audio/AudioProvider';
+
 import { useParams } from 'react-router-dom';
 
 const SimuStar = () => {
@@ -15,8 +15,7 @@ const SimuStar = () => {
   const [buttonText, setButtonText] = useState('ดี');
   const [buttonColor, setButtonColor] = useState('#000000');
   const [backgroundImage, setBackgroundImage] = useState('default');
-  
-  
+
 
   // ฟังก์ชันการจัดการคลิกปุ่ม "ดี"
   const handleLeftButtonClick = () => {

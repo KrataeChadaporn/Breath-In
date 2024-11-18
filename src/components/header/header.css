@@ -29,12 +29,7 @@ header i {
   margin: 0 10px;
   margin-top: -20px;
 }
-header button {
-  margin-top: -20px;
-  border-radius: 10px;
-  font-size: 15px;
-  font-weight: bold;
-}
+
 .toggle {
   display: none;
 }
@@ -71,4 +66,44 @@ header button {
     cursor: pointer;
     background: none;
   }
+}
+
+.username-hearder{
+  
+  font-size: 23px; /* ขนาดตัวอักษร */
+  color: #333; /* สีของตัวอักษร */
+  font-family: Arial, sans-serif;
+
+  padding: 0px 20px; /* ระยะห่างภายใน */
+  display: inline-block; /* ทำให้ข้อความไม่กินทั้งบรรทัด */
+  text-align: center; /* จัดข้อความให้อยู่กลาง */
+  margin-top: -20px;
+  transition: background-color 0.3s, color 0.3s; /* การเปลี่ยนสีแบบนุ่มนวล */
+
+}
+
+.logout-button {
+  font-family: Arial, sans-serif;
+  margin-top: -20px;
+  font-size: 20px; /* ขนาดตัวอักษร */
+  font-weight: bold; /* ตัวอักษรหนา */
+  color: #fff; /* สีตัวอักษร */
+  background-color: #e63946; /* สีพื้นหลังแดง */
+  padding: 10px 20px; /* ระยะห่างภายใน */
+  border: none; /* ไม่มีเส้นขอบ */
+  border-radius: 5px; /* มุมโค้ง */
+  cursor: pointer; /* เปลี่ยนเคอร์เซอร์เป็นมือ */
+  text-transform: uppercase; /* ตัวอักษรพิมพ์ใหญ่ */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* เงาเล็กน้อย */
+  transition: background-color 0.3s, transform 0.2s; /* การเปลี่ยนสีและขนาดแบบนุ่มนวล */
+}
+
+.logout-button:hover {
+  background-color: #d62839; /* สีพื้นหลังเข้มขึ้นเมื่อเอาเมาส์วาง */
+  transform: scale(1.05); /* ขยายเล็กน้อยเมื่อเอาเมาส์วาง */
+}
+
+.logout-button:active {
+  background-color: #b71c1c; /* สีพื้นหลังเข้มขึ้นเมื่อกด */
+  transform: scale(0.95); /* ย่อเล็กน้อยเมื่อคลิก */
 }
