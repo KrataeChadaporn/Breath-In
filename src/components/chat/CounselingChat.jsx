@@ -1,193 +1,166 @@
-import React, { useEffect, useState } from "react";
-import "./chat.css";
+import React, { useState, useEffect, useRef } from "react";
 import { db, auth } from "../../firebaseConfig";
 import {
   collection,
-  getDocs,
-  query,
   addDoc,
+  query,
   where,
-  orderBy,
   onSnapshot,
   serverTimestamp,
+  orderBy,
   doc,
   getDoc,
 } from "firebase/firestore";
-import { useNavigate, Link } from "react-router-dom"; // ใช้ useHistory แทน useNavigate
+import { useParams, useNavigate } from "react-router-dom";
+import styles from "./chat.css";
 
-const Community = () => {
-  const [experts, setExperts] = useState([]); // ผู้เชี่ยวชาญ
-  const [posts, setPosts] = useState([]); // โพสต์ของชุมชน
-  const [newPost, setNewPost] = useState(""); // โพสต์ใหม่
+const CounselingChat = () => {
+  const { expertId } = useParams();
+  const [messages, setMessages] = useState([]);
+  const [newMessage, setNewMessage] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const history = useNavigate
+  const [expertName, setExpertName] = useState("");
+  const chatBoxRef = useRef(null);
+  const userId = auth.currentUser?.uid; // ดึง userId ของผู้ใช้งานปัจจุบัน
+  const navigate = useNavigate();
 
-  const currentUser = auth.currentUser; // ผู้ใช้ปัจจุบัน
-
-  // ดึงข้อมูลผู้เชี่ยวชาญ
+  // ดึงชื่อผู้เชี่ยวชาญ
   useEffect(() => {
-    const fetchExperts = async () => {
-      setLoading(true);
+    const fetchExpertName = async () => {
       try {
-        const querySnapshot = await getDocs(collection(db, "experts"));
-        const expertsData = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setExperts(expertsData);
-        setError(null);
+        const expertRef = doc(db, "experts", expertId);
+        const expertSnap = await getDoc(expertRef);
+        if (expertSnap.exists()) {
+          setExpertName(expertSnap.data().name || "ผู้เชี่ยวชาญ");
+        } else {
+          setExpertName("ไม่พบชื่อผู้เชี่ยวชาญ");
+        }
       } catch (err) {
-        console.error("Error fetching experts:", err);
-        setError("ไม่สามารถดึงข้อมูลผู้เชี่ยวชาญได้ในขณะนี้");
-      } finally {
-        setLoading(false);
+        console.error("Error fetching expert name:", err);
       }
     };
 
-    fetchExperts();
-  }, []);
+    fetchExpertName();
+  }, [expertId]);
 
-  // ดึงข้อมูลโพสต์
+  // ดึงข้อความแชท
   useEffect(() => {
-    const fetchPosts = async () => {
-      const postQuery = query(
-        collection(db, "broadcasts"),
-        orderBy("createdAt", "desc")
+    const fetchMessages = () => {
+      if (!userId || !expertId) return;
+
+      setLoading(true);
+
+      const q = query(
+        collection(db, "chats"),
+        where("userId", "==", userId),
+        where("expertId", "==", expertId),
+        orderBy("createdAt", "asc")
       );
-      const unsubscribe = onSnapshot(postQuery, async (snapshot) => {
-        const postsWithAuthors = await Promise.all(
-          snapshot.docs.map(async (docSnapshot) => {
-            const post = { id: docSnapshot.id, ...docSnapshot.data() };
-            if (post.authorId) {
-              try {
-                // ตรวจสอบ `authorId` ใน `users` ก่อน
-                const userRef = doc(db, "users", post.authorId);
-                const userSnap = await getDoc(userRef);
-                if (userSnap.exists()) {
-                  post.authorName = userSnap.data().name || "ไม่ระบุชื่อ";
-                } else {
-                  // หากไม่พบใน `users` ให้ตรวจสอบใน `experts`
-                  const expertRef = doc(db, "experts", post.authorId);
-                  const expertSnap = await getDoc(expertRef);
-                  post.authorName = expertSnap.exists()
-                    ? expertSnap.data().name || "ผู้เชี่ยวชาญ"
-                    : "ไม่ระบุชื่อ";
-                }
-              } catch (error) {
-                console.error("Error fetching user/expert:", error);
-                post.authorName = "ไม่ระบุชื่อ";
-              }
-            } else {
-              post.authorName = "ไม่ระบุชื่อ";
-            }
-            return post;
-          })
-        );
-        setPosts(postsWithAuthors);
-      });
+
+      const unsubscribe = onSnapshot(
+        q,
+        (snapshot) => {
+          const messagesData = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }));
+          setMessages(messagesData);
+          setLoading(false);
+          scrollToBottom();
+        },
+        (err) => {
+          console.error("Error fetching messages:", err);
+          setError("ไม่สามารถโหลดข้อความได้");
+          setLoading(false);
+        }
+      );
+
       return unsubscribe;
     };
 
-    fetchPosts();
-  }, []);
+    const unsubscribe = fetchMessages();
+    return () => unsubscribe();
+  }, [userId, expertId]);
 
-  // ฟังก์ชันเริ่มต้นการสนทนากับผู้เชี่ยวชาญ
-  const startConversation = async (expertId) => {
-    if (!currentUser) {
-      alert("กรุณาเข้าสู่ระบบก่อน");
-      history.push("/login"); // ใช้ history.push แทน navigate
-      return;
+  // ส่งข้อความ
+  const sendMessage = async (e) => {
+    e.preventDefault();
+
+    if (!newMessage.trim()) {
+      return alert("กรุณากรอกข้อความก่อนส่ง");
     }
 
-    const conversationRef = collection(db, "conversations");
-    const q = query(
-      conversationRef,
-      where("userId", "==", currentUser.uid),
-      where("expertId", "==", expertId)
-    );
-    const existingConversation = await getDocs(q);
-
-    if (existingConversation.empty) {
-      await addDoc(conversationRef, {
-        userId: currentUser.uid,
+    try {
+      await addDoc(collection(db, "chats"), {
+        userId,
         expertId,
-        lastMessage: "",
-        timestamp: serverTimestamp(),
+        text: newMessage,
+        sender: "user",
+        createdAt: serverTimestamp(),
       });
+      setNewMessage("");
+      scrollToBottom();
+    } catch (err) {
+      console.error("Error sending message:", err);
+      alert("ไม่สามารถส่งข้อความได้");
     }
-
-    history.push(`/chat/${expertId}`); // ใช้ history.push แทน navigate
   };
 
-  // ฟังก์ชันเพิ่มโพสต์ใหม่
-  const handleAddPost = async () => {
-    if (newPost.trim()) {
-      await addDoc(collection(db, "broadcasts"), {
-        text: newPost,
-        createdAt: serverTimestamp(),
-        authorId: currentUser?.uid || null,
-      });
-      setNewPost("");
+  // เลื่อนแชทลงล่างสุด
+  const scrollToBottom = () => {
+    if (chatBoxRef.current) {
+      chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
     }
   };
 
   return (
-    <div className="community-container">
-      {/* ส่วนคุยกับผู้เชี่ยวชาญ */}
-      <div className="expert-section">
-        <h2>คุยกับผู้เชี่ยวชาญ</h2>
-        {loading ? (
-          <p>กำลังโหลดข้อมูล...</p>
-        ) : error ? (
-          <p style={{ color: "red" }}>{error}</p>
-        ) : (
-          <ul>
-            {experts.map((expert) => (
-              <li key={expert.id}>
-                <div className="expert-card">
-                  <img src={expert.imageUrl} alt={expert.name} />
-                  <div className="expert-info">
-                    <h3>{expert.name}</h3>
-                    <p>ความเชี่ยวชาญ: {expert.specialty}</p>
-                    <p>สถานที่: {expert.location}</p>
-                    <p>เบอร์โทร: {expert.phone}</p>
-                  </div>
-                  <button onClick={() => startConversation(expert.id)}>
-                    แชทปรึกษา
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+    <div className={styles.chatAppContainer}>
+      <div className={styles.counselingChatContainer}>
+        <h2 className={styles.chatHeading}>
+          Chat กับผู้เชี่ยวชาญ: {expertName || "กำลังโหลด..."}
+        </h2>
 
-      {/* ส่วนโพสต์ของชุมชน */}
-      <div className="community-section">
-        <h2>โพสต์ของชุมชน</h2>
-        <div>
-          <ul>
-            {posts.map((post) => (
-              <li key={post.id}>
-                <div>
-                  <Link to={`/post/${post.id}`}>
-                    <h4>โพสต์โดย: {post.authorName}</h4>
-                  </Link>
-                  <p>{post.text}</p>
-                  <p>
-                    {post.createdAt?.toDate
-                      ? post.createdAt.toDate().toLocaleString()
-                      : "Invalid Date"}
-                  </p>
-                </div>
-              </li>
-            ))}
-          </ul>
+        {loading && <p className={styles.loadingText}>กำลังโหลด...</p>}
+        {error && <p className={styles.errorText}>{error}</p>}
+
+        <div className={styles.chatBox} ref={chatBoxRef}>
+          {messages.map((message) => (
+            <div
+              key={message.id}
+              className={`${styles.chatMessage} ${
+                message.sender === "user" ? styles.user : styles.expert
+              }`}
+            >
+              <p>{message.text}</p>
+              <span className={styles.timestamp}>
+                {message.createdAt?.toDate()?.toLocaleString("th-TH", {
+                  day: "2-digit",
+                  month: "2-digit",
+                  year: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </span>
+            </div>
+          ))}
         </div>
+
+        <form onSubmit={sendMessage} className={styles.chatForm}>
+          <input
+            type="text"
+            placeholder="พิมพ์ข้อความ..."
+            value={newMessage}
+            onChange={(e) => setNewMessage(e.target.value)}
+            className={styles.chatInput}
+          />
+          <button type="submit" className={styles.chatButton}>
+            ส่ง
+          </button>
+        </form>
       </div>
     </div>
   );
 };
 
-export default Community;
+export default CounselingChat;

@@ -135,31 +135,35 @@ const Simulator = () => {
     <div className="simulator-container">
       {isMoodModalOpen && (
         <div className="mood-modal-overlay">
-          <div className="mood-modal">
-            <h3 className="mood-selection-title">วันนี้คุณรู้สึกอย่างไรบ้าง?</h3>
-            <div className="mood-selection">
-              {moods.map((mood) => (
-                <button
-                  key={mood.id}
-                  className={`mood-button ${
-                    selectedMood === mood.id ? 'selected' : ''
-                  }`}
-                  onClick={() => handleMoodSelection(mood.id)}
-                >
-                  {mood.emoji} {mood.label}
-                </button>
-              ))}
-            </div>
-            <button
-              className="confirm-mood-btn"
-              onClick={confirmMoodSelection}
-              disabled={!selectedMood}
-            >
-              ยืนยันอารมณ์
-            </button>
+        <div className="mood-modal">
+          <h3 className="mood-selection-title">วันนี้คุณรู้สึกอย่างไรบ้าง?</h3>
+          <div className="mood-selection">
+            {moods.map((mood) => (
+              <button
+                key={mood.id}
+                className={`mood-button ${
+                  selectedMood === mood.id ? "selected" : ""
+                }`}
+                onClick={() => handleMoodSelection(mood.id)}
+              >
+                <span className="mood-emoji">{mood.emoji}</span>
+                <span className="mood-label">{mood.label}</span>
+              </button>
+            ))}
           </div>
+          <button
+            className="confirm-mood-btn"
+            onClick={confirmMoodSelection}
+            disabled={!selectedMood}
+          >
+            ยืนยันอารมณ์
+          </button>
         </div>
-      )}
+      </div>
+    
+    )}
+
+    
 
       {!isAssessmentStarted ? (
         <div className="overlay">

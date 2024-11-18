@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { createUserWithEmailAndPassword } from "firebase/auth"; // Import Firebase function
-import { auth } from "/Users/kratae/Documents/Hackathon/Breath In/src/firebaseConfig.js"; // Firebase auth import
-import { setDoc, doc } from "firebase/firestore"; // Import Firestore methods
-import { db } from "/Users/kratae/Documents/Hackathon/Breath In/src/firebaseConfig.js"; // Import Firestore instance
+import { createUserWithEmailAndPassword , signOut  } from "firebase/auth";
+import { auth } from "../../firebaseConfig";
+import { setDoc, doc } from "firebase/firestore";
+import { db } from "../../firebaseConfig";
 import "./login.css";
 
 const Register = () => {
@@ -20,7 +20,7 @@ const Register = () => {
   const [showConsent, setShowConsent] = useState(false); // State for displaying the consent modal
   const [consentGiven, setConsentGiven] = useState(false); // State for tracking if consent is given
   const [modalConsentGiven, setModalConsentGiven] = useState(false); // Track consent in modal
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   // Handle form data changes
   const handleChange = (e) => {
@@ -41,41 +41,36 @@ const Register = () => {
     }
   };
 
-  const handleCheckboxChange = () => {
-    setConsentGiven(!consentGiven); // Toggle consent checkbox
-  };
-
-  const handleModalCheckboxChange = () => {
-    setModalConsentGiven(!modalConsentGiven); // Toggle consent checkbox in modal
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null); // เคลียร์ข้อผิดพลาดก่อนการส่งคำขอ
-  
-    // ตรวจสอบอีเมล
+    setError(null); // Clear error messages
+
+    // Check for consent
+    if (!consentGiven) {
+      setError("กรุณายอมรับแบบแสดงความยินยอมก่อน");
+      return;
+    }
+
+    // Validate form data
     if (!formData.email || !/\S+@\S+\.\S+/.test(formData.email)) {
       setError("โปรดกรอกอีเมลที่ถูกต้อง");
       return;
     }
-  
-    // ตรวจสอบรหัสผ่าน
     if (formData.password.length < 6) {
       setError("รหัสผ่านต้องมีความยาวอย่างน้อย 6 ตัวอักษร");
       return;
     }
-  
+
     try {
-      // สร้างบัญชีผู้ใช้ใน Firebase Authentication
+      // Create user with Firebase Authentication
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         formData.email,
         formData.password
       );
-  
       const user = userCredential.user;
-  
-      // เพิ่มข้อมูลผู้ใช้เพิ่มเติมใน Firestore
+
+      // Save additional user data in Firestore
       await setDoc(doc(db, "users", user.uid), {
         firstName: formData.firstName,
         lastName: formData.lastName,
@@ -84,19 +79,15 @@ const Register = () => {
         email: formData.email,
         createdAt: new Date(),
       });
-  
+      await signOut(auth); // บังคับให้ผู้ใช้ล็อกเอาท์
       alert("ลงทะเบียนสำเร็จ!");
-  
-      // นำทางไปที่หน้าล็อกอินหลังจากสมัครเสร็จ
-      navigate('/login'); // เปลี่ยนเส้นทางไปหน้าล็อกอิน
-  
+      navigate("/login"); // Redirect to login page
     } catch (error) {
       console.error("Error during registration:", error);
       setError(error.message || "เกิดข้อผิดพลาดในการลงทะเบียน กรุณาลองอีกครั้ง");
     }
   };
-  
-  
+
   return (
     <div className="auth-container">
       <div className="auth-image">
@@ -124,12 +115,7 @@ const Register = () => {
             onChange={handleChange}
           />
           <label>วัน/เดือน/ปีเกิด</label>
-          <input
-            type="date"
-            name="birthDate"
-            required
-            onChange={handleChange}
-          />
+          <input type="date" name="birthDate" required onChange={handleChange} />
           <label>เบอร์โทรติดต่อ</label>
           <input
             type="tel"
@@ -154,15 +140,20 @@ const Register = () => {
             required
             onChange={handleChange}
           />
-
           <div className="consent-container">
             <label htmlFor="consent">
+              <input
+                type="checkbox"
+                id="consent"
+                checked={consentGiven}
+                onChange={() => setConsentGiven(!consentGiven)}
+              />
+              <span> ยอมรับแบบแสดงความยินยอม </span>
               <span onClick={handleConsent} className="consent-link">
-                ยอมรับแบบแสดงความยินยอม
+                อ่านเงื่อนไข
               </span>
             </label>
           </div>
-
           <button type="submit" className="auth-button">
             ยืนยัน
           </button>
@@ -181,8 +172,7 @@ const Register = () => {
           <div className="modal-content">
             <h2>แบบแสดงความยินยอมให้เก็บ รวบรวม ใช้ เปิดเผยข้อมูล</h2>
             <p>
-              ข้าพเจ้าตกลงยินยอมให้มหาวิทยาลัยเชียงใหม่ เก็บรวบรวม ใช้ หรือ เปิดเผยข้อมูลส่วนบุคคลของข้าพเจ้าที่มีอยู่กับแบบประเมินต่าง ๆ ของ CMU Mind ซึ่งต่อไปนี้ในหนังสือให้ความยินยอมฉบับนี้เรียกว่า
-              “ผู้ควบคุมข้อมูลส่วนบุคคล”ภายใต้เงื่อนไข ดังต่อไปนี้
+              ข้าพเจ้าตกลงยินยอมให้มหาวิทยาลัยเชียงใหม่ เก็บรวบรวม ใช้ หรือ เปิดเผยข้อมูลส่วนบุคคล...
             </p>
             <ul>
             <li>1. วัตถุประสงค์ของการเก็บรวบรวม ใช้ หรือเปิดเผยข้อมูลส่วนบุคคล เพื่อประโยชน์ต่อกระบวนการประเมินสุขภาพจิตเบื้องต้นและคัดกรองความเสี่ยงต่อปัญหาสุขภาพจิต และติดตามดูแลช่วยเหลือผู้ที่เสี่ยงมีปัญหาสุขภาพจิต หากภายหลังมีการเปลี่ยนแปลงวัตถุประสงค์ในการเก็บรวบรวมข้อมูลส่วนบุคคล ผู้ให้บริการจะประกาศให้ผู้ใช้บริการทราบ</li>
@@ -198,7 +188,7 @@ const Register = () => {
                 type="checkbox"
                 id="modal-consent"
                 checked={modalConsentGiven}
-                onChange={handleModalCheckboxChange}
+                onChange={() => setModalConsentGiven(!modalConsentGiven)}
               />
               <label htmlFor="modal-consent">ยอมรับและเข้าใจเงื่อนไขข้างต้น</label>
             </div>

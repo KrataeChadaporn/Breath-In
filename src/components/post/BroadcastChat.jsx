@@ -1,199 +1,113 @@
-import React, { useState, useEffect } from "react";
-import { db, auth } from "../../firebaseConfig";
-import {
-  collection,
-  addDoc,
-  query,
-  onSnapshot,
-  orderBy,
-  Timestamp,
-  doc,
-  getDoc,
-} from "firebase/firestore";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from 'react';
+import './post.css';
+import { useNavigate } from 'react-router-dom'; // Use useNavigate instead of useHistory
+import { collection, addDoc } from 'firebase/firestore';
+import { db } from '../../firebase'; // Firebase connection
 
-const BroadcastChat = () => {
-  const [broadcasts, setBroadcasts] = useState([]);
-  const [newBroadcast, setNewBroadcast] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [posting, setPosting] = useState(false);
-  const [error, setError] = useState(null);
-  const history = useNavigate(); 
+const NewMoodAssessment = () => {
+  const navigate = useNavigate(); // Initialize useNavigate
+  const [selectedMood, setSelectedMood] = useState('');
+  const [isMoodModalOpen, setIsMoodModalOpen] = useState(true);
+  const [feedbackModal, setFeedbackModal] = useState(null);
 
-  useEffect(() => {
-    const fetchBroadcasts = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-  
-        const broadcastQuery = query(
-          collection(db, "broadcasts"),
-          orderBy("createdAt", "desc")
-        );
-  
-        const unsubscribe = onSnapshot(broadcastQuery, async (snapshot) => {
-          const broadcastsWithAuthors = await Promise.all(
-            snapshot.docs.map(async (docSnapshot) => {
-              const broadcast = { id: docSnapshot.id, ...docSnapshot.data() };
-              console.log("Processing broadcast:", broadcast);
-  
-              if (broadcast.authorId) {
-                broadcast.authorName = await getAuthorName(broadcast.authorId);
-              } else {
-                broadcast.authorName = "ไม่ระบุชื่อ";
-              }
-              console.log("Processed broadcast:", broadcast);
-              return broadcast;
-            })
-          );
-          setBroadcasts(broadcastsWithAuthors);
-          console.log("Broadcasts set:", broadcastsWithAuthors);
-        });
-  
-        return () => unsubscribe();
-      } catch (err) {
-        console.error("Error fetching broadcasts:", err);
-        setError("ไม่สามารถโหลดข้อมูลได้");
-      } finally {
-        setLoading(false);
-      }
-    };
-  
-    fetchBroadcasts();
-  }, []);
-  
-  // ฟังก์ชันช่วยดึงชื่อผู้เขียนจาก users หรือ experts
-  const getAuthorName = async (authorId) => {
+  // Mood options
+  const moods = [
+    { id: 'relaxed', label: 'ผ่อนคลาย', emoji: '😌', score: 2, feedback: 'คุณไม่มีอาการซึมเศร้าเลย', action: 'home' },
+    { id: 'happy', label: 'มีความสุข', emoji: '😊', score: 1, feedback: 'คุณไม่มีอาการซึมเศร้าเลย', action: 'home' },
+    { id: 'worried', label: 'กังวล', emoji: '😟', score: 3, feedback: 'คุณมีอาการซึมเศร้าระดับน้อย', action: 'expert' },
+    { id: 'sad', label: 'เศร้า', emoji: '😢', score: 4, feedback: 'คุณมีอาการซึมเศร้าระดับปานกลาง', action: 'expert' },
+    { id: 'angry', label: 'โกรธ', emoji: '😠', score: 5, feedback: 'คุณมีอาการซึมเศร้าระดับมาก', action: 'expert' },
+  ];
+
+  // Save mood data to localStorage
+  const saveToMoodHistory = (data) => {
     try {
-      // ตรวจสอบใน collection "users"
-      const userRef = doc(db, "users", authorId);
-      const userSnap = await getDoc(userRef);
-      if (userSnap.exists()) {
-        const userData = userSnap.data();
-        return userData.firstName && userData.lastName
-          ? `${userData.firstName} ${userData.lastName}`
-          : userData.firstName || "ไม่ระบุชื่อ";
-      }
-  
-      // หากไม่พบใน "users" ให้ตรวจสอบใน "experts"
-      const expertRef = doc(db, "experts", authorId);
-      const expertSnap = await getDoc(expertRef);
-      if (expertSnap.exists()) {
-        const expertData = expertSnap.data();
-        return expertData.name || "ผู้เชี่ยวชาญ";
-      }
-    } catch (err) {
-      console.error("Error fetching author name:", err);
-    }
-  
-    // กรณีไม่พบทั้งใน "users" และ "experts"
-    return "ไม่ระบุชื่อ";
-  };
-
-  const handleAddBroadcast = async () => {
-    if (!auth.currentUser) {
-      alert("กรุณาเข้าสู่ระบบก่อนโพสต์");
-      return;
-    }
-
-    if (!newBroadcast.trim()) {
-      alert("กรุณาใส่ข้อความก่อนโพสต์");
-      return;
-    }
-
-    try {
-      setPosting(true);
-      await addDoc(collection(db, "broadcasts"), {
-        text: newBroadcast,
-        createdAt: Timestamp.now(),
-        authorId: auth.currentUser?.uid || null, // เก็บ ID ผู้โพสต์
-      });
-      setNewBroadcast(""); // Reset input field
-      alert("โพสต์สำเร็จ!");
-    } catch (err) {
-      console.error("Error adding broadcast:", err);
-      alert("ไม่สามารถเพิ่มโพสต์ได้");
-    } finally {
-      setPosting(false);
+      const savedMoods = JSON.parse(localStorage.getItem('moodHistory')) || [];
+      savedMoods.push(data);
+      localStorage.setItem('moodHistory', JSON.stringify(savedMoods));
+    } catch (error) {
+      console.error('Failed to save mood history:', error);
     }
   };
 
-  if (loading) return <p>กำลังโหลด...</p>;
-  if (error) return <p style={{ color: "red" }}>{error}</p>;
+  // Handle mood selection
+  const handleMoodSelection = (moodId) => {
+    setSelectedMood(moodId);
+  };
+
+  // Confirm mood and show feedback modal
+  const confirmMoodSelection = () => {
+    if (selectedMood) {
+      const currentMood = moods.find((mood) => mood.id === selectedMood);
+
+      // Save mood to history
+      const moodAfterAssessment = {
+        date: new Date().toISOString(),
+        emoji: currentMood.emoji,
+        label: currentMood.label,
+        score: currentMood.score,
+        type: 'afterAssessment',
+      };
+      saveToMoodHistory(moodAfterAssessment);
+
+      // Close the mood selection modal and show feedback modal
+      setIsMoodModalOpen(false);
+      setFeedbackModal(currentMood);
+    }
+  };
+
+  // Handle feedback action button
+  const handleFeedbackAction = () => {
+    if (feedbackModal?.action === 'home') {
+      navigate('/'); // Redirect to the homepage
+    } else if (feedbackModal?.action === 'expert') {
+      navigate('/talk-to-expert'); // Redirect to the expert page
+    }
+  };
 
   return (
-    <div style={{ maxWidth: "600px", margin: "0 auto", padding: "20px" }}>
-      <h2>Broadcast Chat</h2>
-      <div>
-        <textarea
-          placeholder="คุณต้องการพูดอะไร?"
-          value={newBroadcast}
-          onChange={(e) => setNewBroadcast(e.target.value)}
-          style={{
-            width: "100%",
-            height: "80px",
-            padding: "10px",
-            marginBottom: "10px",
-            borderRadius: "8px",
-            border: "1px solid #ccc",
-          }}
-          disabled={posting}
-        />
-        <button
-          onClick={handleAddBroadcast}
-          style={{
-            backgroundColor: "#4CAF50",
-            color: "white",
-            padding: "10px 20px",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
-            opacity: posting ? 0.6 : 1,
-          }}
-          disabled={posting}
-        >
-          {posting ? "กำลังโพสต์..." : "โพสต์"}
-        </button>
-      </div>
+    <div className="simulator-container">
+      {/* Mood Selection Modal */}
+      {isMoodModalOpen && (
+        <div className="mood-modal-overlay">
+          <div className="mood-modal">
+            <h3 className="mood-selection-title">หลังเล่นคุณรู้สึกอย่างไรบ้าง?</h3>
+            <div className="mood-selection">
+              {moods.map((mood) => (
+                <button
+                  key={mood.id}
+                  className={`mood-button ${selectedMood === mood.id ? 'selected' : ''}`}
+                  onClick={() => handleMoodSelection(mood.id)}
+                >
+                  <span className="mood-emoji">{mood.emoji}</span>
+                  <span className="mood-label">{mood.label}</span>
+                </button>
+              ))}
+            </div>
+            <button
+              className="confirm-mood-btn"
+              onClick={confirmMoodSelection}
+              disabled={!selectedMood}
+            >
+              ยืนยันอารมณ์
+            </button>
+          </div>
+        </div>
+      )}
 
-      <div style={{ marginTop: "20px" }}>
-        <h3>โพสต์ล่าสุด</h3>
-        <ul style={{ listStyleType: "none", padding: "0" }}>
-          {broadcasts.length > 0 ? (
-            broadcasts.map((broadcast) => (
-              <li
-                key={broadcast.id}
-                style={{
-                  border: "1px solid #ccc",
-                  borderRadius: "8px",
-                  padding: "10px",
-                  marginBottom: "10px",
-                  backgroundColor: "#f9f9f9",
-                  cursor: "pointer",
-                }}
-                onClick={() => history.push(`/post/${broadcast.id}`)} // ใช้ history.push แทน navigate
-              >
-                <p>
-                  <strong>ผู้โพสต์:</strong> {broadcast.authorName}
-                </p>
-                <p>
-                  <strong>ข้อความ:</strong> {broadcast.text}
-                </p>
-                <p style={{ fontSize: "12px", color: "#888" }}>
-                  <strong>เวลา:</strong>{" "}
-                  {broadcast.createdAt?.toDate
-                    ? broadcast.createdAt.toDate().toLocaleString()
-                    : "ไม่พบวันที่"}
-                </p>
-              </li>
-            ))
-          ) : (
-            <p>ไม่มีโพสต์</p>
-          )}
-        </ul>
-      </div>
+      {/* Feedback Modal */}
+      {feedbackModal && (
+        <div className="mood-modal-overlay">
+          <div className={`feedback-modal ${feedbackModal.id}`}>
+            <h3>{feedbackModal.feedback}</h3>
+            <button className="confirm-mood-btn" onClick={handleFeedbackAction}>
+              {feedbackModal.action === 'home' ? 'กลับไปหน้าแรก' : 'พูดคุยกับผู้เชี่ยวชาญ'}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
-export default BroadcastChat;
+export default NewMoodAssessment;

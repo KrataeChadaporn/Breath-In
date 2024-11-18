@@ -11,7 +11,7 @@ const Login = () => {
   const [email, setEmail] = useState(""); // เก็บค่าอีเมล
   const [password, setPassword] = useState(""); // เก็บค่ารหัสผ่าน
   const [error, setError] = useState(null); // เก็บข้อความแสดงข้อผิดพลาด
-  const history = useNavigate();
+  const navigate  = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -21,7 +21,7 @@ const Login = () => {
       console.log("ล็อกอินสำเร็จ:", userCredential.user);
       alert("เข้าสู่ระบบสำเร็จ!");
       setError(null); // ล้างข้อความแสดงข้อผิดพลาด
-      history.push("/"); // เปลี่ยนหน้าไปยังหน้าหลักหลังล็อกอินสำเร็จ
+      navigate("/"); // เปลี่ยนหน้าไปยังหน้าหลักหลังล็อกอินสำเร็จ
     } catch (err) {
       console.error("เกิดข้อผิดพลาดระหว่างการเข้าสู่ระบบ:", err.message);
       // กำหนดข้อความแสดงข้อผิดพลาดตามสถานการณ์ที่พบ
