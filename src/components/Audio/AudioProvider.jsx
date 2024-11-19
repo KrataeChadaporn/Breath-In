@@ -1,44 +1,56 @@
-import { useState, useRef, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 
-const useAudio = (playOnPages) => {
-  const audioRef = useRef(new Audio()); // ใช้ useRef เพื่อเก็บ Audio instance
-  const [isPlaying, setIsPlaying] = useState(false); // สถานะการเล่นเพลง
-  const location = useLocation(); // ดึงเส้นทางปัจจุบัน
+let sharedAudio = null; // เก็บตัวแปร sharedAudio สำหรับการเล่นต่อเนื่อง
 
-  // ฟังก์ชันเริ่มเล่นเพลง
-  const play = (src) => {
-    if (audioRef.current.src !== src) {
-      audioRef.current.src = src; // กำหนดแหล่งเพลงใหม่
-    }
-    audioRef.current.play().catch((err) => {
-      console.error("Error playing audio:", err);
-    });
-    setIsPlaying(true);
-  };
+const AudioPlayer = () => {
+  const location = useLocation(); // ใช้ตรวจสอบ URL ปัจจุบัน
+  const [currentTrack, setCurrentTrack] = useState(null); // เก็บ track ที่กำลังเล่น
 
-  // ฟังก์ชันหยุดเพลง
-  const pause = () => {
-    audioRef.current.pause();
-    setIsPlaying(false);
-  };
-
-  // ใช้ loop เพื่อให้เพลงเล่นต่อเนื่อง
   useEffect(() => {
-    const audioObj = audioRef.current;
-    audioObj.loop = true; // ทำให้เพลงเล่นวนลูป
+    const group1 = ["/simustar/1", "/simulast"]; // กลุ่มแรก
+    const group2 = ["/Learn", "/final-self"]; // กลุ่มที่สอง
 
-    if (playOnPages.includes(location.pathname)) {
-      play(audioRef.current.src || "/Users/kratae/Documents/Hackathon/Breath In/public/video/music1.mp3"); // เริ่มเล่นเพลงหากอยู่ในหน้าที่กำหนด
-    } else {
-      pause(); // หยุดเพลงหากอยู่นอกหน้าที่กำหนด
+    let newAudioSource = null;
+
+    // ตรวจสอบ URL และกำหนดเพลงใหม่ถ้าจำเป็น
+    if (group1.includes(location.pathname)) {
+      newAudioSource = "/video/music1.mp3"; // เพลงสำหรับกลุ่มแรก
+    } else if (group2.includes(location.pathname)) {
+      newAudioSource = "/video/music2.mp3"; // เพลงสำหรับกลุ่มที่สอง
     }
-return () => {
-      audioObj.pause();
-      audioObj.currentTime = 0;
-    };
-  }, [location.pathname, playOnPages]);
 
-  return { play, pause, isPlaying, audioRef };
+    // หากเพลงใหม่ไม่ตรงกับเพลงปัจจุบัน ให้เปลี่ยนเพลง
+    if (newAudioSource && newAudioSource !== currentTrack) {
+      // หยุดเพลงเก่า
+      if (sharedAudio) {
+        sharedAudio.pause();
+        sharedAudio.currentTime = 0;
+      }
+
+      // สร้างเพลงใหม่
+      sharedAudio = new Audio(newAudioSource);
+      sharedAudio.loop = true;
+      sharedAudio
+        .play()
+        .then(() => setCurrentTrack(newAudioSource)) // อัปเดต track ปัจจุบัน
+        .catch((err) => console.error("Error playing audio:", err));
+    }
+
+    // Cleanup เมื่อ component ถูก unmount
+    return () => {
+      if (!group1.includes(location.pathname) && !group2.includes(location.pathname)) {
+        // หยุดเพลงถ้าออกจากสองกลุ่มนี้
+        if (sharedAudio) {
+          sharedAudio.pause();
+          sharedAudio.currentTime = 0;
+          sharedAudio = null;
+        }
+      }
+    };
+  }, [location.pathname, currentTrack]); // อัปเดตเมื่อ URL หรือ track เปลี่ยน
+
+  return null; // Component นี้ไม่ต้องแสดงอะไร
 };
-export default useAudio;
+
+export default AudioPlayer;

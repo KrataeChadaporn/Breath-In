@@ -31,15 +31,15 @@ const Blogread = () => {
       </div>
       <div className="blogread-content">
         <section>
-          <h2>หัวข้อ 1: ความสำคัญของบทความ</h2>
+          <h2>{selectedBlog.head1}</h2>
           <p>{selectedBlog.part1}</p>
         </section>
         <section>
-          <h2>หัวข้อ 2: เนื้อหาหลัก</h2>
+          <h2>{selectedBlog.head2}</h2>
           <p>{selectedBlog.part2}</p>
         </section>
         <section>
-          <h2>หัวข้อ 3: ข้อสรุป</h2>
+          <h2>{selectedBlog.head3}</h2>
           <p>{selectedBlog.part3}</p>
         </section>
       </div>

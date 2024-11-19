@@ -1,3 +1,4 @@
+// src/components/header/Header.jsx
 import React, { useState, useEffect, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { auth, db } from "../../firebaseConfig"; // Firebase Config
@@ -5,6 +6,8 @@ import { signOut } from "firebase/auth";
 import { doc, getDoc, query, where, collection, getDocs } from "firebase/firestore";
 import "./header.css";
 import { AuthContext } from "../login/auth/AuthContext";
+// ใช้ชื่อที่แตกต่างจาก Link ที่มาจาก react-router-dom
+import { Link as ScrollLink } from 'react-scroll'; // เปลี่ยนชื่อ Link จาก react-scroll
 
 const Header = () => {
   const [Mobile, setMobile] = useState(false);
@@ -77,7 +80,14 @@ const Header = () => {
               <Link to="/">หน้าหลัก</Link>
             </li>
             <li>
-              <Link to="/menu">โหมดจำลอง</Link>
+            <ScrollLink to="simmu" smooth={true} duration={500}>
+              โหมดจำลอง</ScrollLink>
+            </li>
+            <li>
+              {/* ใช้ ScrollLink แทน Link จาก react-scroll */}
+              <ScrollLink to="blog" smooth={true} duration={500}>
+                บทความ
+              </ScrollLink>
             </li>
             {currentUser && (
               <>
@@ -85,7 +95,8 @@ const Header = () => {
                   <Link to="/mood-tracking">ติดตามอารมณ์</Link>
                 </li>
                 <li>
-                  <Link to="/broadcast-chat">ชุมชน</Link>
+                <ScrollLink to="commu" smooth={true} duration={500}>
+                ชุมชน</ScrollLink>
                 </li>
               </>
             )}

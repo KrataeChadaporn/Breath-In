@@ -68,6 +68,7 @@ p {
 }
 /*---------------control-btn-------------*/
 .heading h1 {
+  font-size: 1.5em;
   font-weight: 500;
   margin: 30px 0;
 }
@@ -130,4 +131,52 @@ p {
     width: 320px;
     height: 250px;
   }
+}
+/* Mobile optimization (max-width: 768px) */
+@media only screen and (max-width: 768px) {
+  .MovieBox {
+    width: 100%; /* เปลี่ยนให้ MovieBox กินพื้นที่เต็มที่ */
+    height: auto; /* ปรับให้สูงขึ้นตามอัตราส่วน */
+  }
+  
+  .control-btn button {
+    width: 40px;
+    height: 40px;
+  }
+
+  .heading h1 {
+    font-size: 20px; /* ลดขนาดข้อความในหัวข้อ */
+  }
+  
+  button {
+    padding: 10px 30px; /* ปรับขนาดปุ่มให้เล็กลง */
+    font-size: 14px;
+  }
+}
+
+/* เพิ่ม Media Query สำหรับขนาดหน้าจอที่ใหญ่กว่า 768px */
+@media only screen and (min-width: 769px) {
+  .MovieBox {
+    width: 430px;
+    height: 300px;
+  }
+}
+
+/* ปรับปรุงการตั้งค่าของ .container */
+.container {
+  max-width: 100%; /* ให้ความกว้างเต็มที่บนทุกขนาดหน้าจอ */
+  padding: 0 15px; /* เพิ่ม Padding เพื่อไม่ให้เนื้อหาชิดขอบ */
+}
+
+/* ปรับปรุง flexbox ให้เหมาะสมกับอุปกรณ์ต่างๆ */
+.flexSB {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap; /* ใช้ flex-wrap เพื่อให้เนื้อหาห่อหุ้ม */
+}
+
+.flex {
+  display: flex;
+  flex-wrap: wrap; /* เพิ่มการห่อหุ้มเพื่อให้ไม่หัก */
 }

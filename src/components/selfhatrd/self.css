@@ -559,3 +559,193 @@
 .mood-button.selected .mood-label {
   color: #000000; /* Black label for readability even when selected */
 }
+/* === GENERAL SETTINGS === */
+.mood-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(10px); /* Sleek blur effect */
+}
+
+/* === MODAL CONTAINER === */
+.mood-modal, .feedback-modal {
+  width: 95%;
+  max-width: 800px;
+  font-family: 'Arial', sans-serif;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  animation: fadeIn 0.3s ease-in-out; /* Smooth fade-in effect */
+}
+
+/* Mood Modal */
+.mood-modal {
+  background: #5074c8; /* Blue background */
+  color: white;
+  padding: 30px 25px;
+}
+
+/* Feedback Modal */
+.feedback-modal {
+  background: linear-gradient(135deg, #fefcea, #f1da36); /* Vibrant yellow gradient */
+  color: #333;
+  padding: 40px 30px;
+}
+
+/* Modal Titles */
+.mood-modal h3, .feedback-modal h3 {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+  background: rgba(255, 255, 255, 0.2); /* Subtle background for the title */
+  border-radius: 10px;
+  padding: 10px;
+}
+
+/* === MOOD SELECTION === */
+.mood-selection {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap; /* Wrap options for smaller screens */
+  margin-top: 20px;
+}
+
+/* Mood Button Styles */
+.mood-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 120px;
+  height: 100px;
+  background: #ffffff;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: transform 0.3s, background-color 0.3s, box-shadow 0.3s;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border: 2px solid transparent;
+}
+
+.mood-button:hover {
+  transform: scale(1.05);
+  background-color: #f4f8fc;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.mood-button.selected {
+  background: #e6f7ff;
+  border-color: #4caf50;
+  color: #4caf50;
+  transform: scale(1.1);
+  box-shadow: 0 6px 15px rgba(0, 121, 107, 0.4);
+}
+
+/* Emoji and Label */
+.mood-emojiNA {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+.mood-labelNA {
+  font-size: 1rem;
+  color: #333;
+  font-weight: 500;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* === CONFIRM BUTTON === */
+.confirm-mood-btn {
+  margin-top: 30px;
+  padding: 12px 30px;
+  font-size: 1.2rem;
+  color: white;
+  background-color: #4caf50;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 100%;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
+}
+
+.confirm-mood-btn:hover {
+  background-color: #45a049;
+  transform: scale(1.05);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+}
+
+.confirm-mood-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* === FEEDBACK MODAL COLORS === */
+.feedback-modal.relaxed {
+  background: linear-gradient(135deg, #d4edda, #28a745);
+}
+
+.feedback-modal.happy {
+  background: linear-gradient(135deg, #fff8b8, #ffec43);
+}
+
+.feedback-modal.worried {
+  background: linear-gradient(135deg, #fff59d, #fbc02d);
+}
+
+.feedback-modal.sad {
+  background: linear-gradient(135deg, #ffe8cc, #ff9800);
+}
+
+.feedback-modal.angry {
+  background: linear-gradient(135deg, #ffcccc, #e53935);
+}
+
+/* === RESPONSIVE DESIGN === */
+@media (max-width: 768px) {
+  .mood-modal, .feedback-modal {
+      width: 95%;
+      padding: 20px;
+  }
+
+  .mood-selection {
+      gap: 15px;
+  }
+
+  .mood-buttonNA {
+      width: 100px;
+      height: 80px;
+  }
+
+  .mood-labelNA {
+      font-size: 0.9rem;
+  }
+
+  .confirm-mood-btn {
+      font-size: 1rem;
+  }
+}
+
+/* === ANIMATIONS === */
+@keyframes fadeIn {
+  from {
+      opacity: 0;
+      transform: translateY(-10px);
+  }
+  to {
+      opacity: 1;
+      transform: translateY(0);
+  }
+}

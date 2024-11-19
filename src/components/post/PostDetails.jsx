@@ -26,6 +26,47 @@ const PostDetails = () => {
   const [newReply, setNewReply] = useState("");
   const { currentUser } = useContext(AuthContext);
 
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      const postQuery = query(
+        collection(db, "broadcasts"),
+        orderBy("createdAt", "desc")
+      );
+      const unsubscribe = onSnapshot(postQuery, async (snapshot) => {
+        const postsWithReplies = await Promise.all(
+          snapshot.docs.map(async (docSnapshot) => {
+            const post = { id: docSnapshot.id, ...docSnapshot.data() };
+  
+            // ดึงข้อมูล replies
+            try {
+              const repliesCollection = collection(
+                db,
+                `broadcasts/${post.id}/replies`
+              );
+              const repliesSnapshot = await getDocs(repliesCollection);
+              post.replies = repliesSnapshot.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+              }));
+              post.repliesCount = repliesSnapshot.size; // จำนวน replies
+            } catch (error) {
+              console.error("Error fetching replies:", error);
+              post.replies = [];
+              post.repliesCount = 0; // ค่าเริ่มต้น
+            }
+  
+            return post;
+          })
+        );
+        setPost(postsWithReplies);
+      });
+      return unsubscribe;
+    };
+  
+    fetchPosts();
+  }, []);
+  
   const fetchAuthorName = async (authorId) => {
     try {
       // Check in users collection

@@ -18,9 +18,9 @@ import { useNavigate, Link } from "react-router-dom";
 const Community = () => {
   const [experts, setExperts] = useState([]);
   const [posts, setPosts] = useState([]);
-  const [newPost, setNewPost] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isStarting, setIsStarting] = useState(false);
   const navigate = useNavigate();
 
   const currentUser = auth.currentUser;
@@ -56,33 +56,30 @@ const Community = () => {
         orderBy("createdAt", "desc")
       );
       const unsubscribe = onSnapshot(postQuery, async (snapshot) => {
-        const postsWithAuthors = await Promise.all(
+        const postsWithDetails = await Promise.all(
           snapshot.docs.map(async (docSnapshot) => {
             const post = { id: docSnapshot.id, ...docSnapshot.data() };
+
+            // Fetch author details
             if (post.authorId) {
-              try {
-                const userRef = doc(db, "users", post.authorId);
-                const userSnap = await getDoc(userRef);
-                if (userSnap.exists()) {
-                  post.authorName = userSnap.data().name || "ไม่ระบุชื่อ";
-                } else {
-                  const expertRef = doc(db, "experts", post.authorId);
-                  const expertSnap = await getDoc(expertRef);
-                  post.authorName = expertSnap.exists()
-                    ? expertSnap.data().name || "ผู้เชี่ยวชาญ"
-                    : "ไม่ระบุชื่อ";
-                }
-              } catch (error) {
-                console.error("Error fetching user/expert:", error);
-                post.authorName = "ไม่ระบุชื่อ";
-              }
+              const userRef = doc(db, "users", post.authorId);
+              const userSnap = await getDoc(userRef);
+              post.authorName = userSnap.exists()
+                ? userSnap.data().name || "ไม่ระบุชื่อ"
+                : "ไม่ระบุชื่อ";
             } else {
               post.authorName = "ไม่ระบุชื่อ";
             }
+
+            // Fetch replies count
+            const repliesCollection = collection(db, `broadcasts/${post.id}/replies`);
+            const repliesSnapshot = await getDocs(repliesCollection);
+            post.repliesCount = repliesSnapshot.size;
+
             return post;
           })
         );
-        setPosts(postsWithAuthors);
+        setPosts(postsWithDetails);
       });
       return unsubscribe;
     };
@@ -98,18 +95,18 @@ const Community = () => {
       return;
     }
 
-    const conversationRef = collection(db, "conversations");
-    const q = query(
-      conversationRef,
-      where("userId", "==", currentUser.uid),
-      where("expertId", "==", expertId)
-    );
+    setIsStarting(true);
 
     try {
-      const existingConversation = await getDocs(q);
+      const conversationRef = collection(db, "conversations");
+      const q = query(
+        conversationRef,
+        where("userId", "==", currentUser.uid),
+        where("expertId", "==", expertId)
+      );
 
+      const existingConversation = await getDocs(q);
       if (existingConversation.empty) {
-        // If no conversation exists, create a new one
         await addDoc(conversationRef, {
           userId: currentUser.uid,
           expertId,
@@ -118,10 +115,11 @@ const Community = () => {
         });
       }
 
-      // After checking or creating the conversation, redirect to the chat page
       navigate(`/chat/${expertId}`);
     } catch (error) {
       console.error("Error checking or creating conversation:", error);
+    } finally {
+      setIsStarting(false);
     }
   };
 
@@ -135,49 +133,66 @@ const Community = () => {
         ) : error ? (
           <p style={{ color: "red" }}>{error}</p>
         ) : (
-          <ul>
-            {experts.map((expert) => (
-              <li key={expert.id}>
-                <div className="expert-card">
-                  <img src={expert.imageUrl} alt={expert.name} />
-                  <div className="expert-info">
-                    <h3>{expert.name}</h3>
-                    <p>ความเชี่ยวชาญ: {expert.specialty}</p>
-                    <p>สถานที่: {expert.location}</p>
-                    <p>เบอร์โทร: {expert.phone}</p>
+          <>
+            <ul>
+              {experts.slice(0, 4).map((expert) => ( // แสดงเพียง 4 รายการ
+                <li key={expert.id}>
+                  <div className="expert-card">
+                    <img src={expert.imageUrl} alt={expert.name} loading="lazy" />
+                    <div className="expert-info">
+                      <h3>{expert.name}</h3>
+                      <p>ความเชี่ยวชาญ: {expert.specialty}</p>
+                      <p>สถานที่: {expert.location}</p>
+                      <p>คลีนิค: {expert.clinicLocation}</p>
+                    </div>
+                    <button
+                      className="btn-commuchat"
+                      onClick={() => startConversation(expert.id)}
+                      disabled={isStarting}
+                    >
+                      {isStarting ? "กำลังเชื่อมต่อ..." : "ปรึกษา"}
+                    </button>
                   </div>
-                  <button onClick={() => startConversation(expert.id)}>
-                    แชทปรึกษา
-                  </button>
-                </div>
-              </li>
-            ))}
-          </ul>
+                </li>
+              ))}
+            </ul>
+            <button
+              className="btn-show-more"
+              onClick={() => navigate("/experts")} // ไปยังหน้ารายชื่อผู้เชี่ยวชาญทั้งหมด
+            >
+              ดูเพิ่มเติม
+            </button>
+          </>
         )}
       </div>
-
+  
       {/* Community Posts Section */}
       <div className="community-section">
         <h2>โพสต์ของชุมชน</h2>
-        <div>
-          <ul>
-            {posts.map((post) => (
-              <li key={post.id}>
+        <ul>
+          {posts.slice(0, 4).map((post) => ( // แสดงเพียง 4 รายการ
+            <li key={post.id} className="post-card">
+              <Link to={`/post/${post.id}`} className="post-link">
                 <div>
-                  <Link to={`/post/${post.id}`}>
-                    <h4>โพสต์โดย: {post.authorName}</h4>
-                  </Link>
+                  <h4>{post.authorName}</h4>
                   <p>{post.text}</p>
                   <p>
                     {post.createdAt?.toDate
                       ? post.createdAt.toDate().toLocaleString()
                       : "Invalid Date"}
                   </p>
+                  <p>คำตอบ: {post.repliesCount || 0} รายการ</p>
                 </div>
-              </li>
-            ))}
-          </ul>
-        </div>
+              </Link>
+            </li>
+          ))}
+        </ul>
+        <button
+          className="btn-show-more"
+          onClick={() => navigate("/commupage")} // ไปยังหน้ารายชื่อโพสต์ทั้งหมด
+        >
+          ดูเพิ่มเติม
+        </button>
       </div>
     </div>
   );

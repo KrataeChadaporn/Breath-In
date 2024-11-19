@@ -19,6 +19,10 @@ header a {
   top: -10px;
 }
 
+header a:hover {
+  color: #667BC6; /* สีเมื่อเมาส์วาง */
+}
+
 header i {
   width: 40px;
   height: 40px;
@@ -88,7 +92,7 @@ header i {
   font-size: 20px; /* ขนาดตัวอักษร */
   font-weight: bold; /* ตัวอักษรหนา */
   color: #fff; /* สีตัวอักษร */
-  background-color: #e63946; /* สีพื้นหลังแดง */
+  background-color: #667BC6; 
   padding: 10px 20px; /* ระยะห่างภายใน */
   border: none; /* ไม่มีเส้นขอบ */
   border-radius: 5px; /* มุมโค้ง */
@@ -99,11 +103,11 @@ header i {
 }
 
 .logout-button:hover {
-  background-color: #d62839; /* สีพื้นหลังเข้มขึ้นเมื่อเอาเมาส์วาง */
+  background-color: #50619e; /* สีพื้นหลังเข้มขึ้นเมื่อเอาเมาส์วาง */
   transform: scale(1.05); /* ขยายเล็กน้อยเมื่อเอาเมาส์วาง */
 }
 
 .logout-button:active {
-  background-color: #b71c1c; /* สีพื้นหลังเข้มขึ้นเมื่อกด */
+  background-color: #333e63; /* สีพื้นหลังเข้มขึ้นเมื่อกด */
   transform: scale(0.95); /* ย่อเล็กน้อยเมื่อคลิก */
 }

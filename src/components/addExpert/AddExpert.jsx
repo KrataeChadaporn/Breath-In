@@ -1,4 +1,3 @@
-// src/components/AddExpert.js
 import React, { useState } from 'react';
 import { db, storage, auth } from '../../firebaseConfig';
 import { collection, addDoc, doc, setDoc } from 'firebase/firestore';
@@ -6,11 +5,11 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 
-
 const AddExpert = () => {
   const [name, setName] = useState('');
   const [specialty, setSpecialty] = useState('');
   const [location, setLocation] = useState('');
+  const [clinicLocation, setClinicLocation] = useState(''); // ฟิลด์ใหม่
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [contact, setContact] = useState('');
@@ -28,7 +27,7 @@ const AddExpert = () => {
   const handleAddExpert = async (e) => {
     e.preventDefault();
 
-    if (!name || !specialty || !location || !phone || !email || !contact || !password || !image) {
+    if (!name || !specialty || !location || !clinicLocation || !phone || !email || !contact || !password || !image) {
       alert('กรุณากรอกข้อมูลให้ครบถ้วน');
       return;
     }
@@ -53,6 +52,7 @@ const AddExpert = () => {
         name,
         specialty,
         location,
+        clinicLocation, // เพิ่มฟิลด์ clinicLocation
         phone,
         email,
         contact,
@@ -74,6 +74,7 @@ const AddExpert = () => {
       setName('');
       setSpecialty('');
       setLocation('');
+      setClinicLocation(''); // รีเซ็ตฟิลด์ clinicLocation
       setPhone('');
       setEmail('');
       setContact('');
@@ -113,6 +114,14 @@ const AddExpert = () => {
           placeholder="สถานที่"
           value={location}
           onChange={(e) => setLocation(e.target.value)}
+          required
+          className="add-expert-input"
+        />
+        <input
+          type="text"
+          placeholder="สถานที่คลินิก" // ฟิลด์ใหม่
+          value={clinicLocation}
+          onChange={(e) => setClinicLocation(e.target.value)}
           required
           className="add-expert-input"
         />

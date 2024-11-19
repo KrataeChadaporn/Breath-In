@@ -18,6 +18,7 @@
   
   .expert-section h2,
   .community-section h2 {
+
     text-align: center;
     margin-bottom: 15px;
   }
@@ -52,6 +53,7 @@
   }
   
   .expert-info {
+   
     flex-grow: 1;
   }
   
@@ -59,11 +61,12 @@
     margin: 0;
     font-size: 1.1rem;
     font-weight: bold;
+    color: black;
   }
   
   .expert-info p {
-    margin: 5px 0;
-    font-size: 0.9rem;
+    margin: 2px 0;
+    font-size: 1.0rem;
     color: #555;
   }
   
@@ -86,9 +89,16 @@
     background-color: #fff;
     margin-bottom: 15px;
     padding: 15px;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 8px; /* เพิ่มความโค้ง */
+    border: 1px solid #ddd; /* เพิ่มเส้นขอบ */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* เพิ่มเงา */
+    transition: transform 0.2s ease;
   }
+  
+  .post-card:hover {
+    transform: scale(1.02); /* ขยายเล็กน้อยเมื่อเอาเมาส์วาง */
+  }
+  
   
   .post-card h4 {
     margin: 0;
@@ -105,4 +115,54 @@
     color: black;
   }
   
-  
+ .btn-commuchat{
+  font-family: Arial, sans-serif;
+  margin-top: -20px;
+  font-size: 20px; /* ขนาดตัวอักษร */
+  font-weight: bold; /* ตัวอักษรหนา */
+  color: #fff; /* สีตัวอักษร */
+  background-color: #667BC6; 
+  padding: 10px 20px; /* ระยะห่างภายใน */
+  border: none; /* ไม่มีเส้นขอบ */
+  border-radius: 5px; /* มุมโค้ง */
+  cursor: pointer; /* เปลี่ยนเคอร์เซอร์เป็นมือ */
+  text-transform: uppercase; /* ตัวอักษรพิมพ์ใหญ่ */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* เงาเล็กน้อย */
+  transition: background-color 0.3s, transform 0.2s; /* การเปลี่ยนสีและขนาดแบบนุ่มนวล */
+ }
+
+
+ .btn-commuchat:hover {
+  background-color: #50619e; /* สีพื้นหลังเข้มขึ้นเมื่อเอาเมาส์วาง */
+  transform: scale(1.05); /* ขยายเล็กน้อยเมื่อเอาเมาส์วาง */
+}
+
+.btn-commuchat:active {
+  background-color: #333e63; /* สีพื้นหลังเข้มขึ้นเมื่อกด */
+  transform: scale(0.95); /* ย่อเล็กน้อยเมื่อคลิก */
+}
+
+.btn-show-more{
+  font-family: Arial, sans-serif;
+  margin-top: 10px;
+  font-size: 20px; /* ขนาดตัวอักษร */
+  font-weight: bold; /* ตัวอักษรหนา */
+  color: #fff; /* สีตัวอักษร */
+  background-color: #667BC6; 
+  padding: 10px 20px; /* ระยะห่างภายใน */
+  border: none; /* ไม่มีเส้นขอบ */
+  border-radius: 5px; /* มุมโค้ง */
+  cursor: pointer; /* เปลี่ยนเคอร์เซอร์เป็นมือ */
+  text-transform: uppercase; /* ตัวอักษรพิมพ์ใหญ่ */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* เงาเล็กน้อย */
+  transition: background-color 0.3s, transform 0.2s; /* การเปลี่ยนสีและขนาดแบบนุ่มนวล */
+}
+.btn-show-more:hover {
+  background-color: #50619e; /* สีพื้นหลังเข้มขึ้นเมื่อเอาเมาส์วาง */
+  transform: scale(1.05); /* ขยายเล็กน้อยเมื่อเอาเมาส์วาง */
+}
+
+.btn-show-more:active {
+  background-color: #333e63; /* สีพื้นหลังเข้มขึ้นเมื่อกด */
+  transform: scale(0.95); /* ย่อเล็กน้อยเมื่อคลิก */
+}

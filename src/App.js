@@ -24,33 +24,46 @@ import Community from "./components/community/Community";
 import Blogread from "./components/blog/Blogread";
 import { AuthProvider } from "./components/login/auth/AuthContext";
 import PrivateRoute  from "../src/components/login/auth/PrivateRoute";
+import AudioPlayer from "./components/audio/AudioProvider";
+import CommuPage from "./components/post/CommuPage";
+
 
 function App() {
   return (
     <AuthProvider>
     <Router>
+      <AudioPlayer />
       <Header />
       <Routes>
         <Route path="/" element={<HomePage />} />
+        {/* โหมดจำลอง */}
         <Route path="/simulator/:id" element={<PrivateRoute><Simulator /></PrivateRoute>} />
         <Route path="/simustar/:id" element={<SimuStar />} />
         <Route path="/simulast" element={<SimuLast />} />
         <Route path="/learn" element={<Learn />} />
-        <Route path="/singlepage/:id" element={<SinglePage />} />
         <Route path="/final-self" element={<FinalSelf />} />
         <Route path="/tellself" element={<TellSelf />} />
+        {/* เข้าสู่ระบบ */}
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        {/* ผู้เชี่ยวชาญ */}
         <Route path="/add-expert" element={<AddExpert />} />
         <Route path="/expert-chat" element={<ExpertChatPage />} />
+        {/* แชท */}
         <Route path="/chat/:expertId" element={<CounselingChat />} />
         <Route path="/chat" element={<Community />} />
-        <Route path="/broadcast-chat" element={<BroadcastChat />} />
+       
+        {/* โพสต์ */}
         <Route path="/post/:postId" element={<PostDetails />} />
+        <Route path="/commupage" element={<CommuPage />} />
+        {/* ติดตามอารมณ์ */}
         <Route path="/mood-tracking" element={<MoodTracking />} />
         <Route path="/mood-comparison" element={<MoodComparisonChart />} />
         <Route path="/new-mood-assessment" element={<NewMoodAssessment />} />
+        {/* บล็อค */}
+        <Route path="/broadcast-chat" element={<BroadcastChat />} />
         <Route path="/blogread/:id" element={<Blogread />} />
+        <Route path="/singlepage/:id" element={<SinglePage />} />
       </Routes>
       {/* <Footer /> */}
     </Router>
