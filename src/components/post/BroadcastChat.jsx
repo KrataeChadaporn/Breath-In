@@ -1,113 +1,248 @@
-import React, { useState } from 'react';
-import './post.css';
-import { useNavigate } from 'react-router-dom'; // Use useNavigate instead of useHistory
-import { collection, addDoc } from 'firebase/firestore';
-import { db } from '../../firebase'; // Firebase connection
+import React, { useState, useEffect } from "react";
+import { db, auth } from "../../firebaseConfig";
+import {
+  collection,
+  addDoc,
+  query,
+  onSnapshot,
+  orderBy,
+  Timestamp,
+  doc,
+  getDoc,
+  getDocs,
+} from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
-const NewMoodAssessment = () => {
-  const navigate = useNavigate(); // Initialize useNavigate
-  const [selectedMood, setSelectedMood] = useState('');
-  const [isMoodModalOpen, setIsMoodModalOpen] = useState(true);
-  const [feedbackModal, setFeedbackModal] = useState(null);
+const BroadcastChat = () => {
+  const [broadcasts, setBroadcasts] = useState([]);
+  const [newBroadcast, setNewBroadcast] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [posting, setPosting] = useState(false);
+  const [error, setError] = useState(null);
+  const history = useNavigate();
+  const [anonymous, setAnonymous] = useState(false);
 
-  // Mood options
-  const moods = [
-    { id: 'relaxed', label: 'ผ่อนคลาย', emoji: '😌', score: 2, feedback: 'คุณไม่มีอาการซึมเศร้าเลย', action: 'home' },
-    { id: 'happy', label: 'มีความสุข', emoji: '😊', score: 1, feedback: 'คุณไม่มีอาการซึมเศร้าเลย', action: 'home' },
-    { id: 'worried', label: 'กังวล', emoji: '😟', score: 3, feedback: 'คุณมีอาการซึมเศร้าระดับน้อย', action: 'expert' },
-    { id: 'sad', label: 'เศร้า', emoji: '😢', score: 4, feedback: 'คุณมีอาการซึมเศร้าระดับปานกลาง', action: 'expert' },
-    { id: 'angry', label: 'โกรธ', emoji: '😠', score: 5, feedback: 'คุณมีอาการซึมเศร้าระดับมาก', action: 'expert' },
-  ];
 
-  // Save mood data to localStorage
-  const saveToMoodHistory = (data) => {
+  useEffect(() => {
+    const fetchBroadcasts = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const broadcastQuery = query(
+          collection(db, "broadcasts"),
+          orderBy("createdAt", "desc")
+        );
+
+        const unsubscribe = onSnapshot(broadcastQuery, async (snapshot) => {
+          const broadcastsWithAuthorsAndComments = await Promise.all(
+            snapshot.docs.map(async (docSnapshot) => {
+              const broadcast = { id: docSnapshot.id, ...docSnapshot.data() };
+              console.log("Processing broadcast:", broadcast);
+
+              // Get the author's name
+              if (broadcast.authorId) {
+                broadcast.authorName = await getAuthorName(broadcast.authorId);
+              } else {
+                broadcast.authorName = "ไม่ระบุชื่อ";
+              }
+
+              // Fetch and set replies count (comments count)
+              const repliesCollection = collection(db, `broadcasts/${broadcast.id}/replies`);
+              const repliesSnapshot = await getDocs(repliesCollection);
+              broadcast.repliesCount = repliesSnapshot.size;
+
+              // Fetch and set comments
+              const comments = await fetchComments(broadcast.id);
+              broadcast.comments = comments;
+
+              console.log("Processed broadcast:", broadcast);
+              return broadcast;
+            })
+          );
+          setBroadcasts(broadcastsWithAuthorsAndComments);
+          console.log("Broadcasts set:", broadcastsWithAuthorsAndComments);
+        });
+
+        return () => unsubscribe();
+      } catch (err) {
+        console.error("Error fetching broadcasts:", err);
+        setError("ไม่สามารถโหลดข้อมูลได้");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBroadcasts();
+  }, []);
+
+  // Function to fetch author name from "users" or "experts"
+  const getAuthorName = async (authorId) => {
     try {
-      const savedMoods = JSON.parse(localStorage.getItem('moodHistory')) || [];
-      savedMoods.push(data);
-      localStorage.setItem('moodHistory', JSON.stringify(savedMoods));
-    } catch (error) {
-      console.error('Failed to save mood history:', error);
+      const userRef = doc(db, "users", authorId);
+      const userSnap = await getDoc(userRef);
+      if (userSnap.exists()) {
+        const userData = userSnap.data();
+        return userData.firstName && userData.lastName
+          ? `${userData.firstName} ${userData.lastName}`
+          : userData.firstName || "ไม่ระบุชื่อ";
+      }
+
+      const expertRef = doc(db, "experts", authorId);
+      const expertSnap = await getDoc(expertRef);
+      if (expertSnap.exists()) {
+        const expertData = expertSnap.data();
+        return expertData.name || "ผู้เชี่ยวชาญ";
+      }
+    } catch (err) {
+      console.error("Error fetching author name:", err);
+    }
+
+    return "ไม่ระบุชื่อ";
+  };
+
+  // Function to fetch comments for a broadcast
+  const fetchComments = async (broadcastId) => {
+    try {
+      const commentsQuery = query(
+        collection(db, "broadcasts", broadcastId, "comments"),
+        orderBy("createdAt", "desc")
+      );
+      const commentsSnapshot = await getDocs(commentsQuery);
+      const comments = commentsSnapshot.docs.map((doc) => doc.data());
+      return comments;
+    } catch (err) {
+      console.error("Error fetching comments:", err);
+      return [];
     }
   };
 
-  // Handle mood selection
-  const handleMoodSelection = (moodId) => {
-    setSelectedMood(moodId);
-  };
-
-  // Confirm mood and show feedback modal
-  const confirmMoodSelection = () => {
-    if (selectedMood) {
-      const currentMood = moods.find((mood) => mood.id === selectedMood);
-
-      // Save mood to history
-      const moodAfterAssessment = {
-        date: new Date().toISOString(),
-        emoji: currentMood.emoji,
-        label: currentMood.label,
-        score: currentMood.score,
-        type: 'afterAssessment',
-      };
-      saveToMoodHistory(moodAfterAssessment);
-
-      // Close the mood selection modal and show feedback modal
-      setIsMoodModalOpen(false);
-      setFeedbackModal(currentMood);
+  const handleAddBroadcast = async () => {
+    if (!auth.currentUser && !anonymous) {
+      alert("กรุณาเข้าสู่ระบบก่อนโพสต์");
+      return;
+    }
+  
+    if (!newBroadcast.trim()) {
+      alert("กรุณาใส่ข้อความก่อนโพสต์");
+      return;
+    }
+  
+    try {
+      setPosting(true);
+      await addDoc(collection(db, "broadcasts"), {
+        text: newBroadcast,
+        createdAt: Timestamp.now(),
+        authorId: anonymous ? null : auth.currentUser?.uid || null,
+      });
+      setNewBroadcast("");
+      alert("โพสต์สำเร็จ!");
+    } catch (err) {
+      console.error("Error adding broadcast:", err);
+      alert("ไม่สามารถเพิ่มโพสต์ได้");
+    } finally {
+      setPosting(false);
     }
   };
-
-  // Handle feedback action button
-  const handleFeedbackAction = () => {
-    if (feedbackModal?.action === 'home') {
-      navigate('/'); // Redirect to the homepage
-    } else if (feedbackModal?.action === 'expert') {
-      navigate('/talk-to-expert'); // Redirect to the expert page
-    }
-  };
+  
+  if (loading) return <p>กำลังโหลด...</p>;
+  if (error) return <p style={{ color: "red" }}>{error}</p>;
 
   return (
-    <div className="simulator-container">
-      {/* Mood Selection Modal */}
-      {isMoodModalOpen && (
-        <div className="mood-modal-overlay">
-          <div className="mood-modal">
-            <h3 className="mood-selection-title">หลังเล่นคุณรู้สึกอย่างไรบ้าง?</h3>
-            <div className="mood-selection">
-              {moods.map((mood) => (
-                <button
-                  key={mood.id}
-                  className={`mood-button ${selectedMood === mood.id ? 'selected' : ''}`}
-                  onClick={() => handleMoodSelection(mood.id)}
-                >
-                  <span className="mood-emoji">{mood.emoji}</span>
-                  <span className="mood-label">{mood.label}</span>
-                </button>
-              ))}
-            </div>
-            <button
-              className="confirm-mood-btn"
-              onClick={confirmMoodSelection}
-              disabled={!selectedMood}
-            >
-              ยืนยันอารมณ์
-            </button>
-          </div>
-        </div>
-      )}
+    <div>
+      {/* Anonymous Toggle */}
+      
+      {/* Broadcast Container */}
+      <div className="broadcast-chat-container">
+        <h2>ชุมชน</h2>
 
-      {/* Feedback Modal */}
-      {feedbackModal && (
-        <div className="mood-modal-overlay">
-          <div className={`feedback-modal ${feedbackModal.id}`}>
-            <h3>{feedbackModal.feedback}</h3>
-            <button className="confirm-mood-btn" onClick={handleFeedbackAction}>
-              {feedbackModal.action === 'home' ? 'กลับไปหน้าแรก' : 'พูดคุยกับผู้เชี่ยวชาญ'}
-            </button>
-          </div>
+        {/* Textarea and Button */}
+        <div className="broadcast-chat-textarea-container">
+          <textarea
+            placeholder="คุณรู้สึกอย่างไร?"
+            value={newBroadcast}
+            onChange={(e) => setNewBroadcast(e.target.value)}
+            disabled={posting}
+          />
+          <button
+            className="broadcast-chat-button"
+            onClick={handleAddBroadcast}
+            disabled={posting}
+          >
+            {posting ? "กำลังโพสต์..." : "โพสต์"}
+          </button>
         </div>
-      )}
+        <div>
+        <label>
+          <input
+            className="anony"
+            type="checkbox"
+            checked={anonymous}
+            onChange={(e) => setAnonymous(e.target.checked)}
+          />
+          โพสต์แบบไม่ระบุตัวตน
+        </label>
+      </div>
+
+        {/* Broadcast Feed */}
+        <div className="broadcast-chat-feed">
+  <h3>โพสต์ล่าสุด</h3>
+  <ul>
+    {broadcasts.length > 0 ? (
+      broadcasts.map((broadcast) => (
+        <li key={broadcast.id}>
+          {/* ใช้ Link สำหรับการนำทาง */}
+          <Link to={`/post/${broadcast.id}`} className="post-link">
+            {/* Post Author */}
+            <div className="broadcast-chat-author-name">
+              ผู้โพสต์: {broadcast.authorName || "ไม่ระบุตัวตน"}
+            </div>
+
+            {/* Post Text */}
+            <p className="broadcast-chat-post-text">{broadcast.text}</p>
+
+            {/* Post Meta */}
+            <div className="broadcast-chat-post-meta">
+              <span className="timestapBD">
+                <strong>เวลา:</strong>{" "}
+                {broadcast.createdAt?.toDate
+                  ? broadcast.createdAt.toDate().toLocaleString()
+                  : "ไม่พบวันที่"}
+              </span>
+            </div>
+
+            {/* Comment Count */}
+            <p>แสดงความคิดเห็น {broadcast.repliesCount || 0} รายการ</p>
+          </Link>
+
+          {/* Comments Section */}
+          {broadcast.repliesCount > 0 && (
+            <div className="comments-section">
+              <ul>
+                {broadcast.comments.map((comment, index) => (
+                  <li key={index} className="comment">
+                    <p>{comment.text}</p>
+                    <small>
+                      {comment.createdAt?.toDate
+                        ? comment.createdAt.toDate().toLocaleString()
+                        : "ไม่พบวันที่"}
+                    </small>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </li>
+      ))
+    ) : (
+      <p>ไม่มีโพสต์</p>
+    )}
+  </ul>
+</div>
+      </div>
     </div>
   );
 };
 
-export default NewMoodAssessment;
+export default BroadcastChat;

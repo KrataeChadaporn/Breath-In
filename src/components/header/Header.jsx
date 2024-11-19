@@ -13,6 +13,7 @@ const Header = () => {
   const [Mobile, setMobile] = useState(false);
   const [userName, setUserName] = useState("");
   const [userRole, setUserRole] = useState("");
+  const [expertRole, setExpertRole] = useState("");
   const [loading, setLoading] = useState(true); 
   const navigate = useNavigate();
   const { currentUser } = useContext(AuthContext); 
@@ -25,7 +26,7 @@ const Header = () => {
           const userSnap = await getDoc(userDoc);
   
           if (userSnap.exists()) {
-            setUserName(userSnap.data().firstName || "ไม่ระบุชื่อ"); // ใช้ firstName
+            setUserName(userSnap.data().firstName || "แพทย์"); // ใช้ firstName
             setUserRole(userSnap.data().role || "user");
           } else {
             // หากไม่พบใน users ให้ลองดึงจาก experts
@@ -37,7 +38,7 @@ const Header = () => {
   
             if (!expertSnap.empty) {
               const expertData = expertSnap.docs[0].data();
-              setUserName(expertData.firstname || "ไม่ระบุชื่อ");
+              setUserName(expertData.firstname || "แพทย์");
               setUserRole(expertData.role || "expert");
             }
           }
@@ -108,15 +109,13 @@ const Header = () => {
         <div className="account flexSB">
           {currentUser ? (
             <>
-              <span className="username-hearder"> {userName}</span>
+             
               {userRole === "expert" && (
-                <button
-                  onClick={() => navigate("/expert-chat")}
-                  className="chat-button"
-                >
-                  แชทกับผู้ใช้
-                </button>
+               <Link to="/expert-chat" className="chat-link">
+               สนทนากับผู้ใช้
+             </Link>
               )}
+               <span className="username-hearder"> {userName}</span>
               <button onClick={handleLogout} className="logout-button">
                 ออกจากระบบ
               </button>

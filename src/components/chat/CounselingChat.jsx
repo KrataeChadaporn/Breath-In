@@ -12,7 +12,7 @@ import {
   getDoc,
 } from "firebase/firestore";
 import { useParams, useNavigate } from "react-router-dom";
-import styles from "./chat.css";
+import "./chat.css"; // import css file
 
 const CounselingChat = () => {
   const { expertId } = useParams();
@@ -115,25 +115,25 @@ const CounselingChat = () => {
   };
 
   return (
-    <div className={styles.chatAppContainer}>
-      <div className={styles.counselingChatContainer}>
-        <h2 className={styles.chatHeading}>
-          Chat กับผู้เชี่ยวชาญ: {expertName || "กำลังโหลด..."}
+    <div className="chatAppContainer">
+      <div className="counselingChatContainer">
+        <h2 className="chatHeading">
+          ปรึกษากับผู้เชี่ยวชาญ {expertName || "กำลังโหลด..."}
         </h2>
 
-        {loading && <p className={styles.loadingText}>กำลังโหลด...</p>}
-        {error && <p className={styles.errorText}>{error}</p>}
+        {loading && <p className="loadingText">กำลังโหลด...</p>}
+        {error && <p className="errorText">{error}</p>}
 
-        <div className={styles.chatBox} ref={chatBoxRef}>
+        <div className="chatBox" ref={chatBoxRef}>
           {messages.map((message) => (
             <div
               key={message.id}
-              className={`${styles.chatMessage} ${
-                message.sender === "user" ? styles.user : styles.expert
+              className={`chatMessageUser ${
+                message.sender === "user" ? "user" : "expert"
               }`}
             >
               <p>{message.text}</p>
-              <span className={styles.timestamp}>
+              <span className="timestamp">
                 {message.createdAt?.toDate()?.toLocaleString("th-TH", {
                   day: "2-digit",
                   month: "2-digit",
@@ -146,16 +146,16 @@ const CounselingChat = () => {
           ))}
         </div>
 
-        <form onSubmit={sendMessage} className={styles.chatForm}>
+        <form onSubmit={sendMessage} className="chatForm">
           <input
             type="text"
             placeholder="พิมพ์ข้อความ..."
             value={newMessage}
             onChange={(e) => setNewMessage(e.target.value)}
-            className={styles.chatInput}
+            className="chatInput"
           />
-          <button type="submit" className={styles.chatButton}>
-            ส่ง
+          <button type="submit" className="chatButton">
+            ส่งข้อความ
           </button>
         </form>
       </div>

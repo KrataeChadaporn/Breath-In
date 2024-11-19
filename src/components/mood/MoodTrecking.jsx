@@ -1,31 +1,67 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Updated to useNavigate
-import './mood.css'; // Ensure this file exists or create it
+import { useNavigate } from 'react-router-dom';
+import { collection, getDocs, query, where, addDoc, deleteDoc } from 'firebase/firestore';
+import { auth, db } from '../../firebase'; // Firebase setup
+import './mood.css';
 
 const MoodTracking = () => {
-  const [beforeMoodHistory, setBeforeMoodHistory] = useState([]); // State for moods before assessment
-  const [afterMoodHistory, setAfterMoodHistory] = useState([]);  // State for moods after assessment
-  const navigate = useNavigate(); // Hook for navigation
+  const [beforeMoodHistory, setBeforeMoodHistory] = useState([]);
+  const [afterMoodHistory, setAfterMoodHistory] = useState([]);
+  const [currentUser, setCurrentUser] = useState(null); // Track the logged-in user
+  const navigate = useNavigate();
 
-  // Fetch mood history from localStorage on component mount
+  // Fetch user data on mount
   useEffect(() => {
-    try {
-      const savedMoods = JSON.parse(localStorage.getItem('moodHistory')) || [];
-      const beforeMoods = savedMoods.filter(entry => entry.type === 'beforeAssessment');
-      const afterMoods = savedMoods.filter(entry => entry.type === 'afterAssessment');
+    const unsubscribe = auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        setCurrentUser(user);
+        await fetchMoodHistory(user.uid);
+      } else {
+        setCurrentUser(null);
+        setBeforeMoodHistory([]);
+        setAfterMoodHistory([]);
+      }
+    });
 
-      setBeforeMoodHistory(beforeMoods); // Store before-assessment data
-      setAfterMoodHistory(afterMoods);   // Store after-assessment data
-    } catch (error) {
-      console.error("Error fetching mood data:", error);
-    }
+    return () => unsubscribe();
   }, []);
 
-  // Function to clear mood history
-  const clearMoodHistory = () => {
-    localStorage.removeItem('moodHistory'); // Remove all data from localStorage
-    setBeforeMoodHistory([]); // Clear state for before-assessment moods
-    setAfterMoodHistory([]);  // Clear state for after-assessment moods
+  // Fetch mood history from Firestore for the logged-in user
+  const fetchMoodHistory = async (userId) => {
+    try {
+      const moodCollection = collection(db, 'moodHistory');
+      const userMoodQuery = query(moodCollection, where('userId', '==', userId));
+      const moodSnapshot = await getDocs(userMoodQuery);
+
+      const moodData = moodSnapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+
+      const beforeMoods = moodData.filter((entry) => entry.type === 'beforeAssessment');
+      const afterMoods = moodData.filter((entry) => entry.type === 'afterAssessment');
+
+      setBeforeMoodHistory(beforeMoods);
+      setAfterMoodHistory(afterMoods);
+    } catch (error) {
+      console.error('Error fetching mood history:', error);
+    }
+  };
+
+  // Clear mood history for the logged-in user
+  const clearMoodHistory = async () => {
+    if (!currentUser) return; // Ensure user is logged in
+
+    try {
+      const moodCollection = collection(db, 'moodHistory');
+      const userMoodQuery = query(moodCollection, where('userId', '==', currentUser.uid));
+      const moodSnapshot = await getDocs(userMoodQuery);
+
+      const deletePromises = moodSnapshot.docs.map((doc) => deleteDoc(doc.ref));
+      await Promise.all(deletePromises);
+
+      setBeforeMoodHistory([]);
+      setAfterMoodHistory([]);
+    } catch (error) {
+      console.error('Error clearing mood history:', error);
+    }
   };
 
   return (
@@ -33,21 +69,15 @@ const MoodTracking = () => {
       <h2>ประวัติการติดตามอารมณ์</h2>
 
       <div className="button-row">
-        <button
-          className="mood-tracking-button"
-          onClick={() => navigate('/mood-comparison')}
-        >
+        <button className="mood-tracking-button" onClick={() => navigate('/mood-comparison')}>
           ดูรวมประเมิน
         </button>
-        <button
-          className="clear-data-button"
-          onClick={clearMoodHistory}
-        >
+        <button className="clear-data-button" onClick={clearMoodHistory}>
           ล้างข้อมูล
         </button>
       </div>
 
-      {/* Table for Moods Before Assessment */}
+      {/* Table for "Before" Moods */}
       <h3>อารมณ์ก่อนการประเมิน</h3>
       <table className="mood-table">
         <thead>
@@ -63,14 +93,10 @@ const MoodTracking = () => {
             beforeMoodHistory.map((entry, index) => {
               const date = new Date(entry.date);
               const formattedDate = date.toLocaleDateString('th-TH');
-              const formattedTime = date.toLocaleTimeString('th-TH', {
-                hour: '2-digit',
-                minute: '2-digit',
-              });
-              const depressionLevel = entry.level || 'N/A'; // Display depression level if available
-
+              const formattedTime = date.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
+              const depressionLevel = entry.level || 'N/A';
               return (
-                <tr key={index} className="mood-entry">
+                <tr key={entry.id || index} className="mood-entry">
                   <td>{formattedDate}</td>
                   <td>{formattedTime}</td>
                   <td>
@@ -83,15 +109,13 @@ const MoodTracking = () => {
             })
           ) : (
             <tr>
-              <td colSpan="4" className="empty-message">
-                ไม่มีข้อมูลอารมณ์ก่อนการประเมิน
-              </td>
+              <td colSpan="4" className="empty-message">ไม่มีข้อมูลอารมณ์ก่อนการประเมิน</td>
             </tr>
           )}
         </tbody>
       </table>
 
-      {/* Table for Moods After Assessment */}
+      {/* Table for "After" Moods */}
       <h3>อารมณ์หลังการประเมิน</h3>
       <table className="mood-table">
         <thead>
@@ -106,13 +130,9 @@ const MoodTracking = () => {
             afterMoodHistory.map((entry, index) => {
               const date = new Date(entry.date);
               const formattedDate = date.toLocaleDateString('th-TH');
-              const formattedTime = date.toLocaleTimeString('th-TH', {
-                hour: '2-digit',
-                minute: '2-digit',
-              });
-
+              const formattedTime = date.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
               return (
-                <tr key={index} className="mood-entry">
+                <tr key={entry.id || index} className="mood-entry">
                   <td>{formattedDate}</td>
                   <td>{formattedTime}</td>
                   <td>
@@ -124,9 +144,7 @@ const MoodTracking = () => {
             })
           ) : (
             <tr>
-              <td colSpan="3" className="empty-message">
-                ไม่มีข้อมูลอารมณ์หลังการประเมิน
-              </td>
+              <td colSpan="3" className="empty-message">ไม่มีข้อมูลอารมณ์หลังการประเมิน</td>
             </tr>
           )}
         </tbody>

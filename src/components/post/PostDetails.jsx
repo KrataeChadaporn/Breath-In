@@ -189,7 +189,7 @@ const PostDetails = () => {
     <div>
       <h2>รายละเอียดโพสต์</h2>
       <p>
-        <strong>ข้อความ:</strong> {post?.text || "ไม่มีข้อความ"}
+        <strong></strong> {post?.text || "ไม่มีข้อความ"}
       </p>
       <p>
         <strong>วันที่โพสต์:</strong>{" "}

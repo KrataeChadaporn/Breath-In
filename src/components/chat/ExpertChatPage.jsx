@@ -230,65 +230,66 @@ const ExpertChatPage = () => {
   };
 
   return (
-    <div className={styles.expertChatAppContainer}>
-      <div className={styles.expertSidebar}>
-        <h3>Conversations</h3>
-        {conversations.map((conversation) => (
-          <div
-            key={conversation.id}
-            className={`${styles.conversation} ${selectedConversation?.id === conversation.id ? styles.selected : ''}`}
-            onClick={() => setSelectedConversation(conversation)}
-          >
-            <span className={styles.conversationName}>
-              <p>ผู้ใช้ : {userNames[conversation.id] || 'ไม่ระบุชื่อ'}</p>
+    <div className="expertChatAppContainer">
+    <div className="expertSidebar">
+      <h3>การสนทนา</h3>
+      {conversations.map((conversation) => (
+        <div
+          key={conversation.id}
+          className={`conversation ${selectedConversation?.id === conversation.id ? 'selected' : ''}`}
+          onClick={() => setSelectedConversation(conversation)}
+        >
+          <span className="conversationName">
+            <p> {userNames[conversation.id] || 'ไม่ระบุชื่อ'}</p>
+          </span>
+          {notifications[conversation.id] > 0 && (
+            <span className="notificationBadge">
+              <div className="greenDot"></div>
             </span>
-            {notifications[conversation.id] > 0 && (
-              <span className={styles.notificationBadge}>
-                <div className={styles.greenDot}></div>
-              </span>
-            )}
-          </div>
-        ))}
-        {conversations.length === 0 && <p className={styles.noConversations}>ไม่มีการสนทนา</p>}
-      </div>
-
-      <div className={styles.expertChatContainer}>
-        <h2 className={styles.chatHeading}>
-          Chat กับผู้ใช้: {userDetails.firstName || 'ไม่พบข้อมูลผู้ใช้'}
-        </h2>
-
-        <div className={styles.chatBox} ref={chatBoxRef}>
-          {messages.length > 0 ? messages.map((message) => (
-            <div
-              key={message.id}
-              className={`${styles.chatMessage} ${message.senderId === auth.currentUser.uid ? styles.expert : styles.user}`}
-            >
-              <p>{message.text}</p>
-              <span className={styles.timestamp}>
-                {message.createdAt?.toDate().toLocaleString('th-TH', {
-                  day: '2-digit',
-                  month: '2-digit',
-                  year: 'numeric',
-                  hour: '2-digit',
-                  minute: '2-digit',
-                })}
-              </span>
-            </div>
-          )) : <p className={styles.noMessages}>ไม่มีข้อความ</p>}
+          )}
         </div>
-
-        <form onSubmit={sendMessage} className={styles.chatForm}>
-          <input
-            type="text"
-            placeholder="พิมพ์ข้อความ..."
-            value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
-            className={styles.chatInput}
-          />
-          <button type="submit" className={styles.chatButton}>ส่ง</button>
-        </form>
-      </div>
+      ))}
+      {conversations.length === 0 && <p className="noConversations">ไม่มีการสนทนา</p>}
     </div>
+  
+    <div className="expertChatContainer">
+      <h2 className="chatHeading">
+        สนทนากับผู้ใช้ {userDetails.firstName || 'ไม่พบข้อมูลผู้ใช้'}
+      </h2>
+  
+      <div className="chatBox" ref={chatBoxRef}>
+        {messages.length > 0 ? messages.map((message) => (
+          <div
+            key={message.id}
+            className={`chatMessageExpret ${message.senderId === auth.currentUser.uid ? 'expertt' : 'userr'}`}
+          >
+            <p>{message.text}</p>
+            <span className="timestamp">
+              {message.createdAt?.toDate().toLocaleString('th-TH', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+              })}
+            </span>
+          </div>
+        )) : <p className="noMessages">ไม่มีข้อความ</p>}
+      </div>
+  
+      <form onSubmit={sendMessage} className="chatFormEx">
+        <input
+          type="text"
+          placeholder="พิมพ์ข้อความ..."
+          value={newMessage}
+          onChange={(e) => setNewMessage(e.target.value)}
+          className="chatInput"
+        />
+        <button type="submit" className="chatButton">ส่งข้อความ</button>
+      </form>
+    </div>
+  </div>
+  
   );
 };
 

@@ -189,7 +189,7 @@ const Community = () => {
         </ul>
         <button
           className="btn-show-more"
-          onClick={() => navigate("/commupage")} // ไปยังหน้ารายชื่อโพสต์ทั้งหมด
+          onClick={() => navigate("/broadcast-chat")} // ไปยังหน้ารายชื่อโพสต์ทั้งหมด
         >
           ดูเพิ่มเติม
         </button>

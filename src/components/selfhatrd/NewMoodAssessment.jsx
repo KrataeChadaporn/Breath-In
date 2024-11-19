@@ -13,8 +13,8 @@ const NewMoodAssessment = () => {
   // Mood options
   const moods = [
     { id: 'relaxed', label: 'ผ่อนคลาย', emoji: '😌', score: 2, feedback: 'คุณไม่มีอาการซึมเศร้าเลย', action: 'home' },
-    { id: 'happy', label: 'มีความสุข', emoji: '😊', score: 1, feedback: 'คุณไม่มีอาการซึมเศร้าเลย', action: 'home' },
     { id: 'worried', label: 'กังวล', emoji: '😟', score: 3, feedback: 'คุณมีอาการซึมเศร้าระดับน้อย', action: 'expert' },
+    { id: 'happy', label: 'มีความสุข', emoji: '😊', score: 1, feedback: 'คุณไม่มีอาการซึมเศร้าเลย', action: 'home' },
     { id: 'sad', label: 'เศร้า', emoji: '😢', score: 4, feedback: 'คุณมีอาการซึมเศร้าระดับปานกลาง', action: 'expert' },
     { id: 'angry', label: 'โกรธ', emoji: '😠', score: 5, feedback: 'คุณมีอาการซึมเศร้าระดับมาก', action: 'expert' },
   ];
@@ -117,16 +117,25 @@ const NewMoodAssessment = () => {
       )}
 
       {/* Feedback Modal */}
-      {feedbackModal && (
-        <div className="mood-modal-overlay">
-          <div className={`feedback-modal ${feedbackModal.id}`}>
-            <h3>{feedbackModal.feedback}</h3>
-            <button className="confirm-mood-btn" onClick={handleFeedbackAction}>
-              {feedbackModal.action === 'home' ? 'กลับไปหน้าแรก' : 'พูดคุยกับผู้เชี่ยวชาญ'}
-            </button>
-          </div>
-        </div>
-      )}
+{feedbackModal && (
+  <div className="mood-modal-overlay">
+    <div className={`feedback-modal ${feedbackModal.id}`}>
+      <h3>{feedbackModal.feedback}</h3>
+      <div className="feedback-actions">
+        <button className="confirm-mood-btn" onClick={handleFeedbackAction}>
+          {feedbackModal.action === 'home' ? 'กลับไปหน้าแรก' : 'พูดคุยกับผู้เชี่ยวชาญ'}
+        </button>
+        <button
+          className="confirm-mood-btn"
+          onClick={() => navigate('/mood-comparison')}
+        >
+          ดูกราฟผลการประเมิน
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
     </div>
   );
 };

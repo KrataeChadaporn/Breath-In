@@ -72,13 +72,22 @@ header i {
   }
 }
 
+.chat-link {
+  color: #000000;
+  margin-left: 20px;  /* ลดค่านี้เพื่อขยับไปทางซ้าย */
+  font-size: 20px;
+  position: relative;
+  top: -10px;  /* ปรับตำแหน่งแนวตั้ง */
+  left: -60px;  /* เพิ่มหรือลดค่าเพื่อขยับไปทางซ้าย */
+}
+
 .username-hearder{
   
-  font-size: 23px; /* ขนาดตัวอักษร */
+  font-size: 22px; /* ขนาดตัวอักษร */
   color: #333; /* สีของตัวอักษร */
   font-family: Arial, sans-serif;
 
-  padding: 0px 20px; /* ระยะห่างภายใน */
+  padding: 0px 30px; /* ระยะห่างภายใน */
   display: inline-block; /* ทำให้ข้อความไม่กินทั้งบรรทัด */
   text-align: center; /* จัดข้อความให้อยู่กลาง */
   margin-top: -20px;
@@ -87,7 +96,7 @@ header i {
 }
 
 .logout-button {
-  font-family: Arial, sans-serif;
+
   margin-top: -20px;
   font-size: 20px; /* ขนาดตัวอักษร */
   font-weight: bold; /* ตัวอักษรหนา */

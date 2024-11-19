@@ -4,6 +4,8 @@ import { collection, addDoc, doc, setDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
+import './addExpert.css';
+
 
 const AddExpert = () => {
   const [name, setName] = useState('');
@@ -83,7 +85,7 @@ const AddExpert = () => {
       navigate('/'); // เปลี่ยนเส้นทางไปหน้าหลักหลังจากสำเร็จ
     } catch (error) {
       console.error('Error adding expert:', error);
-      alert('เกิดข้อผิดพลาดในการเพิ่มข้อมูลผู้เชี่ยวชาญ');
+    
     } finally {
       setLoading(false);
     }
