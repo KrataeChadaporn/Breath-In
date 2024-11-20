@@ -14,8 +14,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
 import { AuthContext } from "../login/auth/AuthContext"; // Adjust according to your directory structure
-
-
+import './post.css';
 
 const PostDetails = () => {
   const { postId } = useParams();
@@ -26,47 +25,6 @@ const PostDetails = () => {
   const [newReply, setNewReply] = useState("");
   const { currentUser } = useContext(AuthContext);
 
-
-  useEffect(() => {
-    const fetchPosts = async () => {
-      const postQuery = query(
-        collection(db, "broadcasts"),
-        orderBy("createdAt", "desc")
-      );
-      const unsubscribe = onSnapshot(postQuery, async (snapshot) => {
-        const postsWithReplies = await Promise.all(
-          snapshot.docs.map(async (docSnapshot) => {
-            const post = { id: docSnapshot.id, ...docSnapshot.data() };
-  
-            // ดึงข้อมูล replies
-            try {
-              const repliesCollection = collection(
-                db,
-                `broadcasts/${post.id}/replies`
-              );
-              const repliesSnapshot = await getDocs(repliesCollection);
-              post.replies = repliesSnapshot.docs.map((doc) => ({
-                id: doc.id,
-                ...doc.data(),
-              }));
-              post.repliesCount = repliesSnapshot.size; // จำนวน replies
-            } catch (error) {
-              console.error("Error fetching replies:", error);
-              post.replies = [];
-              post.repliesCount = 0; // ค่าเริ่มต้น
-            }
-  
-            return post;
-          })
-        );
-        setPost(postsWithReplies);
-      });
-      return unsubscribe;
-    };
-  
-    fetchPosts();
-  }, []);
-  
   const fetchAuthorName = async (authorId) => {
     try {
       // Check in users collection
@@ -110,33 +68,24 @@ const PostDetails = () => {
 
         if (postSnap.exists()) {
           const postData = postSnap.data();
-
-          if (postData.authorId) {
-            postData.authorName = await fetchAuthorName(postData.authorId);
-          } else {
-            postData.authorName = "ไม่ระบุชื่อ";
-          }
+          postData.authorName = postData.authorId
+            ? await fetchAuthorName(postData.authorId)
+            : "ไม่ระบุชื่อ";
           setPost(postData);
 
           // Fetch replies
           const repliesRef = collection(db, "broadcasts", postId, "replies");
           const q = query(repliesRef, orderBy("createdAt", "asc"));
-
           const unsubscribe = onSnapshot(q, async (snapshot) => {
             const repliesData = await Promise.all(
               snapshot.docs.map(async (replyDoc) => {
                 const reply = { id: replyDoc.id, ...replyDoc.data() };
-
-                if (reply.authorId) {
-                  reply.authorName = await fetchAuthorName(reply.authorId);
-                } else {
-                  reply.authorName = "ไม่ระบุชื่อ";
-                }
-
+                reply.authorName = reply.authorId
+                  ? await fetchAuthorName(reply.authorId)
+                  : "ไม่ระบุชื่อ";
                 return reply;
               })
             );
-
             setReplies(repliesData);
           });
 
@@ -186,77 +135,70 @@ const PostDetails = () => {
   if (error) return <p style={{ color: "red" }}>{error}</p>;
 
   return (
-    <div>
-      <h2>รายละเอียดโพสต์</h2>
-      <p>
-        <strong></strong> {post?.text || "ไม่มีข้อความ"}
-      </p>
-      <p>
-        <strong>วันที่โพสต์:</strong>{" "}
-        {post?.createdAt?.toDate
-          ? post.createdAt.toDate().toLocaleString()
-          : "ไม่พบวันที่"}
-      </p>
-      <p>
-        <strong>ผู้โพสต์:</strong> {post?.authorName || "ไม่ระบุชื่อ"}
-      </p>
+    <div className="post-details-container">
+    <h2 className="post-title"></h2>
+    <p className="post-text">
+      <strong></strong> {post?.text || "ไม่มีข้อความ"}
+    </p>
+    <p className="post-meta">
+      <strong>วันที่โพสต์:</strong>{" "}
+      {post?.createdAt?.toDate
+        ? post.createdAt.toDate().toLocaleString()
+        : "ไม่พบวันที่"}
+    </p>
+    <p className="post-meta">
+    <strong>ผู้โพสต์:</strong>{" "}
+    {post?.authorName || (currentUser ? currentUser.name : "ไม่ระบุชื่อ")}
+  </p>
+  
+    <h3 className="replies-title">การตอบกลับ</h3>
+    {replies.length > 0 ? (
+      <ul className="replies-list">
+        {replies.map((reply) => (
+          <li key={reply.id} className="reply-item">
+            <p>
+              <strong></strong> {reply.text}
+            </p>
+            <p className="reply-meta">
+              <strong>วันที่ตอบกลับ:</strong>{" "}
+              {reply.createdAt?.toDate
+                ? reply.createdAt.toDate().toLocaleString()
+                : "ไม่พบวันที่"}
+            </p>
+            <p className="reply-meta">
+       <strong>ผู้ตอบ:</strong> 
+        {console.log("Reply:", reply)} 
+      { console.log("Current User:", currentUser)}
+  {reply?.authorName || (currentUser?.name || "ไม่ระบุชื่อ")}
+</p>
 
-      <h3>การตอบกลับ</h3>
-      {replies.length > 0 ? (
-        <ul>
-          {replies.map((reply) => (
-            <li key={reply.id} style={{ marginBottom: "10px" }}>
-              <p>
-                <strong>ข้อความ:</strong> {reply.text}
-              </p>
-              <p>
-                <strong>วันที่ตอบกลับ:</strong>{" "}
-                {reply.createdAt?.toDate
-                  ? reply.createdAt.toDate().toLocaleString()
-                  : "ไม่พบวันที่"}
-              </p>
-              <p>
-                <strong>ผู้ตอบ:</strong> {reply.authorName || "ไม่ระบุชื่อ"}
-              </p>
-            </li>
-          ))}
-        </ul>
-      ) : (
-        <p>ไม่มีการตอบกลับ</p>
-      )}
 
-      <div style={{ marginTop: "20px" }}>
-        <h4>แสดงความคิดเห็น</h4>
-        <textarea
-          value={newReply}
-          onChange={(e) => setNewReply(e.target.value)}
-          placeholder="เขียนความคิดเห็นของคุณ..."
-          style={{
-            width: "100%",
-            height: "80px",
-            padding: "10px",
-            marginBottom: "10px",
-            borderRadius: "8px",
-            border: "1px solid #ccc",
-          }}
-          disabled={!currentUser}
-        />
-        <button
-          onClick={handleAddReply}
-          style={{
-            backgroundColor: currentUser ? "#4CAF50" : "#ccc",
-            color: "white",
-            padding: "10px 20px",
-            border: "none",
-            borderRadius: "5px",
-            cursor: currentUser ? "pointer" : "not-allowed",
-          }}
-          disabled={!currentUser}
-        >
-          ส่งความคิดเห็น
-        </button>
-      </div>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p className="no-replies">ไม่มีการตอบกลับ</p>
+    )}
+  
+    <div className="reply-section">
+      <h4 className="comment-title">แสดงความคิดเห็น</h4>
+      <textarea
+        className="reply-input"
+        value={newReply}
+        onChange={(e) => setNewReply(e.target.value)}
+        placeholder="เขียนความคิดเห็นของคุณ..."
+        disabled={!currentUser}
+      />
+      <button
+        className="btn-reply"
+        onClick={handleAddReply}
+        disabled={!currentUser}
+      >
+        ส่งความคิดเห็น
+      </button>
     </div>
+  </div>
+  
   );
 };
 

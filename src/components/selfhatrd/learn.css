@@ -1,12 +1,59 @@
 .learn-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-size: cover;
-    background-position: center;
-    position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  overflow: hidden; /* ป้องกันไม่ให้ก้อนฟุ้งๆ ออกนอกพื้นที่ */
 }
+
+.learn-container::after, .learn-container::before {
+  content: '';
+  position: absolute;
+  width: 150px; /* ขนาดก้อนฟุ้ง */
+  height: 150px; /* ขนาดก้อนฟุ้ง */
+  border-radius: 50%;
+  background-color: rgba(255, 105, 180, 0.5); /* สีชมพูจาง */
+  box-shadow: 0 0 300px 150px rgba(255, 105, 180, 0.5); /* ฟุ้งและเบา */
+  opacity: 0.5; /* ให้ก้อนฟุ้งโปร่งใสและจาง */
+  animation: floatAround 25s infinite ease-in-out; /* การเคลื่อนไหวช้าและสมูท */
+}
+
+.learn-container::before {
+  animation-delay: 10s; /* ให้ก้อนก่อนหน้ามีการเคลื่อนไหวช้ากว่า */
+}
+
+/* การเคลื่อนไหวให้ฟุ้งๆ ขยับไปมา */
+@keyframes floatAround {
+  0% {
+      top: 10%;
+      left: 10%;
+      transform: translate(-50%, -50%);
+  }
+  25% {
+      top: 25%;
+      left: 75%;
+      transform: translate(-50%, -50%);
+  }
+  50% {
+      top: 60%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+  }
+  75% {
+      top: 40%;
+      left: 20%;
+      transform: translate(-50%, -50%);
+  }
+  100% {
+      top: 10%;
+      left: 10%;
+      transform: translate(-50%, -50%);
+  }
+}
+
 
 .learn-container::before {
     content: '';
@@ -41,6 +88,7 @@
   .bg-learning-started {
     background-image: url('/Users/kratae/Documents/Hackathon/Breath In/public/images/16.jpg');
   }
+  
 
   
   .learn-content {

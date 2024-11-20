@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './learn.css'; // นำเข้าไฟล์ CSS
 import { Link } from 'react-router-dom';
+import { useEffect } from 'react';
 
 const Learn = () => {
   const messages = [
@@ -31,6 +32,9 @@ const Learn = () => {
       ? 'bg-final-step' // พื้นหลังใหม่สำหรับขั้นตอนสุดท้าย
       : 'bg-learning-started'
     : `bg-${currentMessageIndex + 1}`;
+
+
+    
 
   return (
     <div className={`learn-container ${backgroundClass}`}>

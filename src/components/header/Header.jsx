@@ -17,40 +17,62 @@ const Header = () => {
   const [loading, setLoading] = useState(true); 
   const navigate = useNavigate();
   const { currentUser } = useContext(AuthContext); 
+  
+  
+
+
 
   useEffect(() => {
-    const fetchUserData = async () => {
+    const fetchUserData = async () => { // Ensure this is async
       if (currentUser) {
         try {
-          const userDoc = doc(db, "users", currentUser.uid); // ดึงเอกสารผู้ใช้
+          console.log("Fetching data for user UID:", currentUser.uid);
+  
+          // ดึงข้อมูลจาก users
+          const userDoc = doc(db, "users", currentUser.uid);
           const userSnap = await getDoc(userDoc);
   
           if (userSnap.exists()) {
-            setUserName(userSnap.data().firstName || "แพทย์"); // ใช้ firstName
+            console.log("User data:", userSnap.data());
+            setUserName(userSnap.data().firstName || "ไม่ระบุ");
             setUserRole(userSnap.data().role || "user");
-          } else {
-            // หากไม่พบใน users ให้ลองดึงจาก experts
-            const expertQuery = query(
-              collection(db, "experts"),
-              where("userId", "==", currentUser.uid)
-            );
-            const expertSnap = await getDocs(expertQuery);
-  
-            if (!expertSnap.empty) {
-              const expertData = expertSnap.docs[0].data();
-              setUserName(expertData.firstname || "แพทย์");
-              setUserRole(expertData.role || "expert");
-            }
           }
+  
+          // ดึงข้อมูลจาก experts
+          const expertQuery = query(
+            collection(db, "experts"),
+            where("userId", "==", currentUser.uid)
+          );
+          const expertSnap = await getDocs(expertQuery);
+  
+          if (!expertSnap.empty) {
+            console.log("Expert data:", expertSnap.docs[0].data());
+            setUserName(expertSnap.firstname || "แพทย์");
+            setUserRole(expertSnap.role || "expert");
+          } else {
+            console.log("No expert found for this user.");
+          }
+          
+  
         } catch (error) {
           console.error("Error fetching user data:", error);
         }
+      } else {
+        console.log("No current user.");
+        // กำหนดค่าเริ่มต้นถ้าไม่มี currentUser
+        setUserName("ไม่ระบุ");
+        setUserRole("guest");
       }
       setLoading(false); // เสร็จสิ้นการโหลด
     };
   
     fetchUserData();
   }, [currentUser]);
+  
+
+
+ 
+
 
   const handleLogout = async () => {
     try {
@@ -63,8 +85,9 @@ const Header = () => {
   };
 
   if (loading) {
-    return <div>Lodeing</div>; // หรือแสดง Loader ตามความเหมาะสม
+    return <div>กำลังโหลดข้อมูล...</div>;
   }
+  
 
   return (
     <header>
@@ -115,7 +138,7 @@ const Header = () => {
                สนทนากับผู้ใช้
              </Link>
               )}
-               <span className="username-hearder"> {userName}</span>
+               <span className="username-hearder"> {userName }</span>
               <button onClick={handleLogout} className="logout-button">
                 ออกจากระบบ
               </button>

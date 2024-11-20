@@ -1,147 +1,150 @@
-import React, { useEffect, useState } from "react";
-import { Bar } from "react-chartjs-2";
-import "chart.js/auto";
-import "./mood.css";
-import { auth, db } from "../../firebaseConfig";
-import { doc, getDoc } from "firebase/firestore";
+import React, { useEffect, useState } from 'react';
+import { Bar } from 'react-chartjs-2';
+import 'chart.js/auto';
+import { auth, db } from '../../firebase'; // Import your Firebase setup
+import { collection, query, where, getDocs } from 'firebase/firestore';
+import './mood.css';
+import { Link } from 'react-router-dom';
 
 const MoodComparisonChart = () => {
   const [chartData, setChartData] = useState(null);
-  const [currentUserId, setCurrentUserId] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Listen for user authentication changes
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      if (user) {
-        setCurrentUserId(user.uid);
-      } else {
-        setCurrentUserId(null);
+    const fetchData = async () => {
+      const user = auth.currentUser; // Get the currently logged-in user
+      if (!user) {
+        console.error('User not logged in');
+        return;
       }
-    });
 
-    return () => unsubscribe();
-  }, []);
-
-  useEffect(() => {
-    if (!currentUserId) return;
-
-    const fetchMoodData = async () => {
       try {
-        const userDocRef = doc(db, "moodData", currentUserId); // Adjust collection name
-        const userDocSnap = await getDoc(userDocRef);
+        const moodCollection = collection(db, 'moodHistory'); // Replace 'moodHistory' with your collection name
+        const moodQuery = query(moodCollection, where('userId', '==', user.uid)); // Filter by user ID
+        const moodSnapshot = await getDocs(moodQuery);
 
-        if (!userDocSnap.exists()) {
-          console.warn("No mood data found for this user.");
-          setChartData(null);
-          return;
-        }
+        const moodHistory = moodSnapshot.docs.map((doc) => doc.data());
 
-        const moodHistory = userDocSnap.data().history || [];
-
+        // Depression levels mapping
         const depressionScores = {
-          "คุณไม่มีอาการซึมเศร้าเลย": 1,
-          "คุณมีอาการซึมเศร้าระดับน้อย": 2,
-          "คุณมีอาการซึมเศร้าระดับปานกลาง": 3,
-          "คุณมีอาการซึมเศร้าระดับมาก": 4,
-          "คุณมีอาการซึมเศร้าระดับรุนแรง": 5,
+          'คุณไม่มีอาการซึมเศร้าเลย': 0,
+          'คุณมีอาการซึมเศร้าระดับน้อย': 1,
+          'คุณมีอาการซึมเศร้าระดับปานกลาง': 2,
+          'คุณมีอาการซึมเศร้าระดับมาก': 3,
+          'คุณมีอาการซึมเศร้าระดับรุนแรง': 4,
         };
 
+        // Mood scores mapping
         const moodScores = {
-          "ผ่อนคลาย": 2,
-          "กังวล": 3,
-          "มีความสุข": 1,
-          "เศร้า": 4,
-          "โกรธ": 5,
+          'ผ่อนคลาย': 1,
+          'กังวล': 2,
+          'มีความสุข': 0,
+          'เศร้า': 3,
+          'โกรธ': 4,
         };
 
+        // Group data
         const beforeAssessmentData = moodHistory
-          .filter((entry) => entry.type === "beforeAssessment" && entry.level)
+          .filter((entry) => entry.type === 'beforeAssessment' && entry.level)
           .map((entry, index) => ({
-            id: index + 1,
-            label: `Entry ${index + 1} (ก่อน)`,
-            score: depressionScores[entry.level] || 0,
+            x: `Entry ${index + 1} (ก่อน)`,
+            y: depressionScores[entry.level] || 0,
           }));
 
         const afterAssessmentData = moodHistory
-          .filter((entry) => entry.type === "afterAssessment" && entry.label)
+          .filter((entry) => entry.type === 'afterAssessment' && entry.label)
           .map((entry, index) => ({
-            id: index + 1,
-            label: `Entry ${index + 1} (หลัง)`,
-            score: moodScores[entry.label] || 0,
+            x: `Entry ${index + 1} (หลัง)`,
+            y: moodScores[entry.label] || 0,
           }));
 
-        const consolidatedLabels = [];
-        const consolidatedScores = [];
-        const consolidatedColors = [];
+        // Combine labels and datasets
+        const labels = beforeAssessmentData.map((entry, index) => `Entry ${index + 1}`);
+        const beforeData = beforeAssessmentData.map((entry) => entry.y);
+        const afterData = afterAssessmentData.map((entry) => entry.y);
 
-        beforeAssessmentData.forEach((beforeData) => {
-          consolidatedLabels.push(beforeData.label);
-          consolidatedScores.push(beforeData.score);
-          consolidatedColors.push("rgba(75, 192, 192, 1)"); // Green for before
-
-          const afterData = afterAssessmentData.find(
-            (after) => after.id === beforeData.id
-          );
-          if (afterData) {
-            consolidatedLabels.push(afterData.label);
-            consolidatedScores.push(afterData.score);
-            consolidatedColors.push("rgba(255, 99, 132, 1)"); // Red for after
-          }
-        });
-
+        // Set chart data
         setChartData({
-          labels: consolidatedLabels,
+          labels,
           datasets: [
             {
-              label: "ระดับภาวะซึมเศร้าและอารมณ์",
-              data: consolidatedScores,
-              backgroundColor: consolidatedColors,
+              label: 'ก่อนการประเมิน',
+              data: beforeData,
+              backgroundColor: 'rgba(99, 143, 205, 0.6)',
+              borderColor: '#4b97c0',
               borderWidth: 1,
+              minBarLength: 6, // ความยาวขั้นต่ำของแถบ
+            },
+            {
+              label: 'หลังการประเมิน',
+              data: afterData,
+              backgroundColor: 'rgba(255, 99, 132, 0.6)',
+              borderColor: 'rgba(255, 99, 132, 1)',
+              borderWidth: 1,
+              minBarLength: 6, // ความยาวขั้นต่ำของแถบ
             },
           ],
         });
+        
+
+        setLoading(false);
       } catch (error) {
-        console.error("Error fetching mood data:", error);
+        console.error('Error fetching mood history:', error);
+        setLoading(false);
       }
     };
 
-    fetchMoodData();
-  }, [currentUserId]);
+    fetchData();
+  }, []);
 
-  if (!chartData) return <p>Loading data...</p>;
+  if (loading) return <p>Loading data...</p>;
+  if (!chartData) return <p>No data available</p>;
 
   return (
     <div className="mood-comparison-container">
       <h2>ผลการติดตามภาวะซึมเศร้าและอารมณ์</h2>
-      <p>
-        แสดงผลระดับภาวะซึมเศร้าก่อนการประเมิน (สีเขียว) และอารมณ์หลังการประเมิน
-        (สีแดง)
-      </p>
+      <p>แสดงผลระดับภาวะซึมเศร้าก่อนการประเมินและอารมณ์หลังการประเมิน</p>
       <Bar
-        data={chartData}
-        options={{
-          responsive: true,
-          scales: {
-            y: {
-              beginAtZero: true,
-              title: { display: true, text: "ระดับซึมเศร้า/อารมณ์" },
-              ticks: { stepSize: 1, min: 1, max: 5 },
-            },
-            x: { title: { display: true, text: "ลำดับการบันทึก" } },
+  data={chartData}
+  options={{
+    responsive: true,
+    scales: {
+      y: {
+        beginAtZero: true,
+        title: { display: true, text: 'ระดับอารมณ์' },
+        ticks: {
+          stepSize: 1,
+          min: 0,
+          max: 5,
+          callback: (value) => {
+            const labels = ['ไม่มีเลย', 'น้อย', 'ปานกลาง', 'มาก', 'รุนแรง'];
+            return labels[value] || '';
           },
-        }}
-      />
+        },
+      },
+      x: {
+        title: { display: true, text: 'จำนวนครั้งที่ติดตาม' },
+        ticks: {
+          autoSkip: false, // ปิดการข้ามค่าบนแกน x
+        },
+        categoryPercentage: 0.8, // ปรับขนาดความกว้างของแถบบนแกน x
+        barPercentage: 0.9, // ปรับความกว้างของแถบบาร์ให้เหมาะสม
+      },
+    },
+    
+  }}
+/>
+
       <p className="note">
         หมายเหตุ: ระดับที่สูงขึ้นบ่งบอกถึงความรุนแรงของภาวะซึมเศร้าหรืออารมณ์ที่มีความเครียดสูง
       </p>
-      <div style={{ textAlign: "center", marginTop: "15px" }}>
-        <p className="note-bold">หากคุณรู้สึกไม่สบายใจ ควรปรึกษาผู้เชี่ยวชาญ</p>
-        <button
-          className="consult-button"
-          onClick={() => window.open("https://example.com/consult", "_blank")}
-        >
-          แชร์กับผู้เชี่ยวชาญ
-        </button>
+      <p className="note-bold">หากคุณรู้สึกไม่สบายใจ สามารถพูดคุยกับผู้เชี่ยวชาญ</p>
+      <div className="center-container">
+        
+       
+          <Link to="/chat" className="consult-button">
+            พูดคุยผู้เชี่ยวชาญ
+          </Link>
       </div>
     </div>
   );

@@ -2,7 +2,7 @@
   display: flex;
   justify-content: center;
   align-items: flex-start; /* เริ่มต้นจากด้านบน */
-  height: 100vh;
+  height: 90vh;
   background-image: url('/Users/kratae/Documents/Hackathon/Breath In/public/images/home1.jpg'); /* เปลี่ยนเป็นเส้นทางที่ถูกต้องของรูปภาพ */
   background-size: cover; /* ขยายรูปให้เต็มพื้นที่ */
   background-position: center; /* ตั้งตำแหน่งของรูปให้อยู่กลาง */
@@ -12,7 +12,7 @@
   color: #151515;
   overflow-y: auto; /* เลื่อนแนวตั้ง */
   position: relative; /* ตั้งตำแหน่งเพื่อเพิ่มการซ้อน */
-  background-color: rgba(0, 0, 0, 0.7); /* เพิ่มความทึบด้วยการใช้ rgba */
+  background-color: rgba(0, 0, 0, 0.8); /* เพิ่มความทึบด้วยการใช้ rgba */
   background-blend-mode: overlay; /* ผสมสีพื้นหลังให้ทึบขึ้น */
 }
 
@@ -83,19 +83,19 @@
 
 /* สีเมื่อไม่ได้เลือก */
 .answer-none {
-  background-color: #a8e6a3; /* สีเขียวอ่อน */
+  background-color: #a3e6c0; /* สีเขียวอ่อน */
 }
 
 .answer-sometimes {
-  background-color: #ffeb99; /* สีเหลืองอ่อน */
+  background-color: #fff099; /* สีเหลืองอ่อน */
 }
 
 .answer-often {
-  background-color: #ffcc99; /* สีส้มอ่อน */
+  background-color: #ffbb99; /* สีส้มอ่อน */
 }
 
 .answer-everyday {
-  background-color: #ff6666; /* สีแดงอ่อน */
+  background-color: #fb6f6f; /* สีแดงอ่อน */
 }
 
 /* เมื่อกดปุ่มแล้ว */
@@ -115,8 +115,8 @@
 }
 
 .answer-button.selected {
-  background-color:#b02535;
-  color: rgb(0, 0, 0);
+  background-color:#f72841;
+  color: rgb(255, 255, 255);
 }
 
 
@@ -154,7 +154,7 @@
 }
 
 .warning-text {
-  font-size: 18px;
+  font-size: 25px;
   line-height: 1.6;
 }
 .answer-button:hover {
@@ -234,8 +234,8 @@
 
 
 .no-depression {
-  background-color: #58D68D;
-  border-color: #58D68D;
+  background-color: #58d69b;
+  border-color: #58d693;
 }
 
 .low-depression {
@@ -327,7 +327,7 @@
 }
 
 .simustar-submit-btn:hover {
-  background-color: #ff3b30;
+  background-color: #a82821;
 }
 
 .sad-mode {
@@ -406,19 +406,48 @@
 
 /* เปลี่ยนหน้า */
 .final-mode {
-  background-image: url('/Users/kratae/Documents/Hackathon/Breath In/public/images/7.jpg'); 
+  background-image: url('/Users/kratae/Documents/Hackathon/Breath In/public/images/7.jpg');
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  animation: fadeInDark 5s infinite alternate; /* อนิเมชันพื้นหลัง */
+ 
 }
+
+@keyframes fadeInDark {
+  0% {
+    filter: grayscale(30%) brightness(100%);
+  }
+  100% {
+    filter: grayscale(60%) brightness(80%);
+  }
+}
+
 .final-question {
   text-align: center;
   color: #fff;
   z-index: 5;
   position: absolute;
-  top: 10%; /* ตำแหน่งด้านบน */
+  top: 10%;
   width: 100%;
   margin-bottom: 20px;
   font-weight: bold;
   text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+  animation: pulseText 3s infinite; /* อนิเมชันข้อความ */
+  z-index: 2;
 }
+
+@keyframes pulseText {
+  0%, 100% {
+    color: rgba(255, 255, 255, 0.8);
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+  }
+  50% {
+    color: rgba(200, 200, 200, 0.6);
+    text-shadow: 3px 3px 10px rgba(0, 0, 0, 0.9);
+  }
+}
+
 
 .final-question h1 {
   font-size: 2rem;
@@ -585,29 +614,11 @@
   animation: fadeIn 0.3s ease-in-out; /* Smooth fade-in effect */
 }
 
-/* Mood Modal */
-.mood-modal {
-  background: #5074c8; /* Blue background */
-  color: white;
-  padding: 30px 25px;
-}
 
-/* Feedback Modal */
-.feedback-modal {
-  background: linear-gradient(135deg, #fefcea, #f1da36); /* Vibrant yellow gradient */
-  color: #333;
-  padding: 40px 30px;
-}
+
+
 
 /* Modal Titles */
-.mood-modal h3, .feedback-modal h3 {
-  font-size: 2rem;
-  font-weight: bold;
-  margin-bottom: 20px;
-  background: rgba(255, 255, 255, 0.2); /* Subtle background for the title */
-  border-radius: 10px;
-  padding: 10px;
-}
 
 /* === MOOD SELECTION === */
 .mood-selection {
@@ -684,7 +695,6 @@
 .mood-modal, .feedback-modal {
   width: 95%;
   max-width: 800px;
-  font-family: 'Arial', sans-serif;
   border-radius: 15px;
   text-align: center;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
@@ -693,15 +703,14 @@
 
 /* Mood Modal */
 .mood-modal {
-  background: #5074c8; /* Blue background */
+  background: #829bd3; /* Blue background */
   color: white;
   padding: 30px 25px;
 }
 
 /* Feedback Modal */
 .feedback-modal {
-  background: linear-gradient(135deg, #fefcea, #f1da36); /* Vibrant yellow gradient */
-  color: #333;
+
   padding: 40px 30px;
 }
 
@@ -713,6 +722,7 @@
   background: rgba(255, 255, 255, 0.2); /* Subtle background for the title */
   border-radius: 10px;
   padding: 10px;
+  color: #2f2f2f;
 }
 
 /* === MOOD SELECTION === */
@@ -751,10 +761,10 @@
 
 .mood-button.selected {
   background: #e6f7ff;
-  border-color: #4caf50;
-  color: #4caf50;
+  border-color: #4c62be;
+  color: #b5ccee;
   transform: scale(1.1);
-  box-shadow: 0 6px 15px rgba(0, 121, 107, 0.4);
+  box-shadow: 0 6px 15px rgba(91, 107, 159, 0.4);
 }
 
 /* Emoji and Label */
@@ -777,21 +787,40 @@
   padding: 12px 30px;
   font-size: 1.2rem;
   color: white;
-  background-color: #4caf50;
+  background-color: rgb(237, 110, 110);
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  width: 100%;
+  width: 60%;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
 }
 
 .confirm-mood-btn:hover {
-  background-color: #45a049;
+  background-color: rgb(210, 71, 55);
   transform: scale(1.05);
   box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
 }
 
+.grap-mood-btn{
+  margin-top: 30px;
+  padding: 12px 30px;
+  font-size: 1.2rem;
+  color: white;
+  background-color: #649cf6;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 60%;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s, transform 0.2s, box-shadow 0.3s;
+}
+
+.grap-mood-btn:hover{
+  background-color: #4a6fab;
+  transform: scale(1.05);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+}
 .confirm-mood-btn:disabled {
   background-color: #ccc;
   cursor: not-allowed;
@@ -804,7 +833,7 @@
 }
 
 .feedback-modal.happy {
-  background: linear-gradient(135deg, #fff8b8, #ffec43);
+  background: linear-gradient(135deg, #faf5c1, #b3e1e6);
 }
 
 .feedback-modal.worried {

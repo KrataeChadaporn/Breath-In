@@ -209,20 +209,25 @@ const Simulator = () => {
   <h2>ผลการประเมิน</h2>
   <h3>{depressionLevel}</h3>
   <p>{recommendation}</p>
-  <p>อารมณ์ก่อนเริ่มการประเมิน: {moods.find((m) => m.id === selectedMood)?.label}</p>
+  
 
   {/* Conditional redirection based on depressionLevel */}
   <button
     className="restart-btn"
     onClick={() => {
-      if (depressionLevel === 'คุณไม่มีอาการซึมเศร้าเลย' || 
-          depressionLevel === 'คุณมีอาการซึมเศร้าระดับน้อย' || 
-          depressionLevel === 'คุณมีอาการซึมเศร้าระดับปานกลาง' || 
-          depressionLevel === 'คุณมีอาการซึมเศร้าระดับมาก') {
+      if (
+        depressionLevel === 'คุณไม่มีอาการซึมเศร้าเลย' || 
+        depressionLevel === 'คุณมีอาการซึมเศร้าระดับน้อย' || 
+        depressionLevel === 'คุณมีอาการซึมเศร้าระดับปานกลาง'
+      ) {
         navigate('/simustar/1'); // Redirect to simustar page
-      } else if (depressionLevel === 'คุณมีอาการซึมเศร้าระดับรุนแรง') {
+      } else if (
+        depressionLevel === 'คุณมีอาการซึมเศร้าระดับมาก' || 
+        depressionLevel === 'คุณมีอาการซึมเศร้าระดับรุนแรง'
+      ) {
         navigate('/chat'); // Redirect to consult a psychiatrist
       }
+      
     }}
   >
     {depressionLevel === 'คุณมีอาการซึมเศร้าระดับรุนแรง'

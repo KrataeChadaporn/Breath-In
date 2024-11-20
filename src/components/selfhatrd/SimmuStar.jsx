@@ -136,7 +136,7 @@ const SimuStar = () => {
             placeholder="พิมพ์กำลังใจของคุณที่นี่..."
           />
           <button className="simustar-submit-btn" onClick={handleSubmit}>
-            {isSadMode ? 'กดส่งข้อความ' : 'ส่งข้อความ'}
+            {isSadMode ? 'ส่งข้อความ' : 'ส่งข้อความ'}
           </button>
           {isSadMode && (
             <div className="sad-messages">

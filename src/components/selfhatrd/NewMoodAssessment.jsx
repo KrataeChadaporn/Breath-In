@@ -126,7 +126,7 @@ const NewMoodAssessment = () => {
           {feedbackModal.action === 'home' ? 'กลับไปหน้าแรก' : 'พูดคุยกับผู้เชี่ยวชาญ'}
         </button>
         <button
-          className="confirm-mood-btn"
+          className="grap-mood-btn"
           onClick={() => navigate('/mood-comparison')}
         >
           ดูกราฟผลการประเมิน

@@ -1,8 +1,8 @@
 /* SimuLast Container */
 .simulast-container {
   display: flex;
-  justify-content: flex-end; /* จัดเนื้อหาไปทางขวา */
-  align-items: center;       /* จัดให้อยู่กึ่งกลางในแนวตั้ง */
+  justify-content: flex-end;
+  align-items: center;
   height: 100vh;
   background-image: url('/Users/kratae/Documents/Hackathon/Breath In/public/images/9.jpg');
   background-size: cover;
@@ -13,8 +13,26 @@
   position: relative;
   background-color: rgba(0, 0, 0, 0.7);
   background-blend-mode: overlay;
-  transition: background-image 0.3s ease; /* เพิ่มการเปลี่ยนแปลงพื้นหลัง */
-  overflow: hidden; /* ไม่ให้มีการเลื่อน */
+  overflow: hidden;
+
+  animation: waveAndFade 8s infinite alternate; /* อนิเมชันใหม่ */
+}
+
+@keyframes waveAndFade {
+  0% {
+    background-size: 100%; /* เริ่มด้วยขนาดปกติ */
+    filter: grayscale(30%) opacity(1);
+  }
+  50% {
+    background-size: 105%; /* ขยายเล็กน้อย */
+    filter: grayscale(40%) opacity(0.7);
+    transform: translateY(-2%); /* ขยับขึ้นเล็กน้อย */
+  }
+  100% {
+    background-size: 110%; /* ขยายมากขึ้น */
+    filter: grayscale(60%) opacity(0.5);
+    transform: translateY(2%); /* ขยับลงเล็กน้อย */
+  }
 }
 
 .stage-changed {
