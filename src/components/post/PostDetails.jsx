@@ -27,22 +27,12 @@ const PostDetails = () => {
 
   const fetchAuthorName = async (authorId) => {
     try {
-      // Check in users collection
       const userRef = doc(db, "users", authorId);
       const userSnap = await getDoc(userRef);
       if (userSnap.exists()) {
-        return userSnap.data().firstName || "ไม่ระบุชื่อ";
-      }
-
-      // Check in experts collection using userId
-      const expertsQuery = query(
-        collection(db, "experts"),
-        where("userId", "==", authorId)
-      );
-      const expertsSnap = await getDocs(expertsQuery);
-      if (!expertsSnap.empty) {
-        const expert = expertsSnap.docs[0].data();
-        return expert.name || "ผู้เชี่ยวชาญ";
+        const userData = userSnap.data();
+        // ตรวจสอบว่ามีฟิลด์ name หรือ firstname
+        return userData.name || userData.firstname || "ไม่ระบุชื่อ";
       }
     } catch (err) {
       console.error("Error fetching author name:", err);
@@ -56,39 +46,49 @@ const PostDetails = () => {
       setLoading(false);
       return;
     }
-
+  
     const fetchPostAndReplies = async () => {
       try {
         setLoading(true);
         setError(null);
-
-        // Fetch post data
+  
+        // ดึงโพสต์หลัก
         const postRef = doc(db, "broadcasts", postId);
         const postSnap = await getDoc(postRef);
-
+  
         if (postSnap.exists()) {
           const postData = postSnap.data();
-          postData.authorName = postData.authorId
-            ? await fetchAuthorName(postData.authorId)
-            : "ไม่ระบุชื่อ";
+  
+          if (postData.authorId) {
+            postData.authorName = await fetchAuthorName(postData.authorId);
+          } else {
+            postData.authorName = "ไม่ระบุชื่อ";
+          }
           setPost(postData);
-
-          // Fetch replies
+  
+          // ดึง replies
           const repliesRef = collection(db, "broadcasts", postId, "replies");
           const q = query(repliesRef, orderBy("createdAt", "asc"));
+  
           const unsubscribe = onSnapshot(q, async (snapshot) => {
             const repliesData = await Promise.all(
               snapshot.docs.map(async (replyDoc) => {
                 const reply = { id: replyDoc.id, ...replyDoc.data() };
-                reply.authorName = reply.authorId
-                  ? await fetchAuthorName(reply.authorId)
-                  : "ไม่ระบุชื่อ";
+  
+                if (reply.authorId) {
+                  // ดึงชื่อผู้ตอบกลับ
+                  reply.authorName = await fetchAuthorName(reply.authorId);
+                } else {
+                  reply.authorName = "ไม่ระบุชื่อ";
+                }
+  
                 return reply;
               })
             );
+  
             setReplies(repliesData);
           });
-
+  
           return () => unsubscribe();
         } else {
           setError("ไม่พบโพสต์นี้");
@@ -100,7 +100,7 @@ const PostDetails = () => {
         setLoading(false);
       }
     };
-
+  
     fetchPostAndReplies();
   }, [postId]);
 

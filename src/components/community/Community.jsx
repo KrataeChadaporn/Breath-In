@@ -143,7 +143,7 @@ const Community = () => {
                       <h3>{expert.name}</h3>
                       <p>ความเชี่ยวชาญ: {expert.specialty}</p>
                       <p>สถานที่: {expert.location}</p>
-                      <p>คลีนิค: {expert.clinicLocation}</p>
+                      <p>คลีนิค: <Link to={'/clinic'}>{expert.clinicLocation}</Link></p>
                     </div>
                     <button
                       className="btn-commuchat"

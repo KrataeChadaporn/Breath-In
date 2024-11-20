@@ -26,6 +26,8 @@ import { AuthProvider } from "./components/login/auth/AuthContext";
 import PrivateRoute  from "../src/components/login/auth/PrivateRoute";
 import AudioPlayer from "./components/audio/AudioProvider";
 import CommuPage from "./components/post/CommuPage";
+import Clinic from "./components/clinic/Clinic";
+import UserProfile from "./components/clinic/UserProfile";
 
 
 function App() {
@@ -64,6 +66,10 @@ function App() {
         <Route path="/broadcast-chat" element={<BroadcastChat />} />
         <Route path="/blogread/:id" element={<Blogread />} />
         <Route path="/singlepage/:id" element={<SinglePage />} />
+        {/* คลีนิค */}
+        <Route path="/clinic" element={<Clinic />} />
+        {/* โปรไฟล์ */}
+        <Route path="/userprofile" element={<UserProfile />} />
       </Routes>
       {/* <Footer /> */}
     </Router>

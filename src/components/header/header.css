@@ -19,6 +19,15 @@ header a {
   top: -10px;
 }
 
+.userheader {
+  color: #000000;
+  margin-left: -20px; /* ลดค่าของ margin-left หรือปรับให้มากขึ้น */
+  font-size: 20px;
+  position: relative;
+  top: -10px;
+  left: -30px; 
+}
+
 header a:hover {
   color: #667BC6; /* สีเมื่อเมาส์วาง */
 }
@@ -78,22 +87,10 @@ header i {
   font-size: 20px;
   position: relative;
   top: -10px;  /* ปรับตำแหน่งแนวตั้ง */
-  left: -60px;  /* เพิ่มหรือลดค่าเพื่อขยับไปทางซ้าย */
+  left: -120px;  /* เพิ่มหรือลดค่าเพื่อขยับไปทางซ้าย */
 }
 
-.username-hearder{
-  
-  font-size: 22px; /* ขนาดตัวอักษร */
-  color: #333; /* สีของตัวอักษร */
-  font-family: Arial, sans-serif;
 
-  padding: 0px 30px; /* ระยะห่างภายใน */
-  display: inline-block; /* ทำให้ข้อความไม่กินทั้งบรรทัด */
-  text-align: center; /* จัดข้อความให้อยู่กลาง */
-  margin-top: -20px;
-  transition: background-color 0.3s, color 0.3s; /* การเปลี่ยนสีแบบนุ่มนวล */
-
-}
 
 .logout-button {
 
@@ -109,6 +106,7 @@ header i {
   text-transform: uppercase; /* ตัวอักษรพิมพ์ใหญ่ */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* เงาเล็กน้อย */
   transition: background-color 0.3s, transform 0.2s; /* การเปลี่ยนสีและขนาดแบบนุ่มนวล */
+  
 }
 
 .logout-button:hover {

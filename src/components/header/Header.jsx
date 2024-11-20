@@ -134,11 +134,14 @@ const Header = () => {
             <>
              
               {userRole === "expert" && (
+          
                <Link to="/expert-chat" className="chat-link">
                สนทนากับผู้ใช้
              </Link>
               )}
-               <span className="username-hearder"> {userName }</span>
+                <Link to="/userprofile" className="userheader"> {/* Add the route path here */}
+                  {userName}
+              </Link>
               <button onClick={handleLogout} className="logout-button">
                 ออกจากระบบ
               </button>
