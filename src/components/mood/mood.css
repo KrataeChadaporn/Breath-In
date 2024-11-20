@@ -19,6 +19,7 @@
   margin-bottom: 25px;
 }
 
+
 .mood-tracking h3 {
   font-size: 1.5em;
   font-weight: bold;
@@ -35,7 +36,7 @@
   display: block;
   margin: 20px auto;
   padding: 10px 20px;
-  background-color: #5074c8;
+  background-color: rgb(212, 58, 58);
   color: #fff;
   border: none;
   border-radius: 5px;
@@ -44,6 +45,22 @@
 }
 
 .mood-tracking-button:hover {
+  background-color: rgb(152, 35, 35);
+}
+
+.clear-data-button{
+  display: block;
+  margin: 20px auto;
+  padding: 10px 20px;
+  background-color: #5074c8;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.clear-data-button:hover{
   background-color: #3e5aa8;
 }
 

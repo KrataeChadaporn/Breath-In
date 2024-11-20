@@ -54,13 +54,13 @@ export const upcome = [
   },
   {
     id: 3,
-    cover: "../images/upcome/u3.jpg",
+    cover: "../images/home3.jpg",
     name: "โรคอารมณ์สองขั้ว",
     time: "เรียนรู้โรคทางจิตเวช",
   },
   {
     id: 4,
-    cover: "../images/upcome/u4.jpg",
+    cover: "../images/home4.jpg",
     name: "โรคซึมเศร้า",
     time: "เรียนรู้โรคทางจิตเวช",
   }

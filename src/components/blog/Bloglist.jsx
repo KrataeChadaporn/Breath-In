@@ -10,7 +10,7 @@ const Bloglist = ({ item: { id, cover, name, time } }) => {
           <img src={cover} alt='' />
         </div>
         <div className='text'>
-          <h3>{name}</h3>
+          <h3 className="blogtext">{name}</h3>
           <span>{time}</span> <br />
           <Link to={`/blogread/${id}`}>
           <button className="primary-btn">

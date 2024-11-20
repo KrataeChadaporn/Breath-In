@@ -68,14 +68,7 @@ const MoodTracking = () => {
     <div className="mood-tracking">
       <h2>ประวัติการติดตามอารมณ์</h2>
 
-      <div className="button-row">
-        <button className="mood-tracking-button" onClick={() => navigate('/mood-comparison')}>
-          ดูรวมประเมิน
-        </button>
-        <button className="clear-data-button" onClick={clearMoodHistory}>
-          ล้างข้อมูล
-        </button>
-      </div>
+     
 
       {/* Table for "Before" Moods */}
       <h3>อารมณ์ก่อนการประเมิน</h3>
@@ -149,6 +142,14 @@ const MoodTracking = () => {
           )}
         </tbody>
       </table>
+      <div className="button-row">
+        <button className="mood-tracking-button" onClick={() => navigate('/mood-comparison')}>
+          แสดงผลกราฟ
+        </button>
+        <button className="clear-data-button" onClick={clearMoodHistory}>
+          ล้างข้อมูล
+        </button>
+      </div>
     </div>
   );
 };

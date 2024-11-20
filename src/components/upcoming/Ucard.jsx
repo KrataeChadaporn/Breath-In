@@ -10,13 +10,13 @@ const Ucard = ({ item: { id, cover, name, time } }) => {
           <img src={cover} alt='' />
         </div>
         <div className='text'>
-          <h3>{name}</h3>
+          <h3 className="upcomtext">{name}</h3>
           <span>{time}</span> <br />
-          {/*<Link to={`/singlepage/${id}`}>*/}
+          <Link to={`/simulator/${id}`}>
           <button className='primary-btn'>
             <i className='fa fa-play'></i> PLAY NOW
           </button>
-          {/*</Link>*/}
+          </Link>
         </div>
       </div>
     </>
