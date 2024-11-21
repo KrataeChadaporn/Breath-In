@@ -1,0 +1,72 @@
+/* จัดให้คอนเทนเนอร์ครอบคลุมพื้นที่ทั้งหมด */
+@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@400;700&display=swap');
+
+.color-sorting {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 1000px; /* ใช้ความสูงเต็มจอ */
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5; /* สีพื้นหลัง */
+  }
+  .color-sorting h2 {
+    margin-bottom: 20px; /* เพิ่มระยะห่างระหว่างข้อความกับแถบสี */
+    font-size: 75px;
+    color: #333; /* สีข้อความ */
+    text-align: center;
+    font-family: 'Kanit', sans-serif;
+    letter-spacing: 5px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+  }
+  .color-container {
+    display: flex;
+    flex-direction: row; /* จัดเรียงแนวนอน */
+    justify-content: center; /* จัดให้อยู่ตรงกลาง */
+    gap: 0; /* ไม่มีระยะห่างระหว่างแถบสี */
+    width: 100%; /* ครอบคลุมความกว้างหน้าจอ */
+    max-width: 2000px; /* จำกัดความกว้างสูงสุด */
+  }
+  
+  .color-box {
+    flex: 1; /* แต่ละแถบแบ่งพื้นที่เท่ากัน */
+    height: 700px; /* ความสูงของแถบสี */
+    cursor: grab;
+    transition: transform 0.3s ease, background-color 0.3s ease;
+  }
+  
+  .color-box:active {
+    cursor: grabbing;
+  }
+  
+  .color-box:hover {
+    transform: scale(1.05); /* ขยายเล็กน้อยเมื่อ hover */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* เพิ่มเงา */
+  }
+
+  .next-button {
+    margin-top: 25px;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 25px; /* ปุ่มแบบวงรี */
+    background-color: #ff5722; /* สีปุ่ม */
+    color: white;
+    font-size: 40px;
+    font-family: 'Kanit', sans-serif;
+    letter-spacing: 5px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+    width: 400px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: absolute; /* จัดตำแหน่งปุ่มให้ลอย */
+    bottom: 50px; /* ห่างจากด้านล่าง */
+  }
+  
+  .next-button:hover {
+    background-color: #e64a19; /* สีปุ่มเมื่อ hover */
+    transform: scale(1.1); /* ขยายปุ่มเล็กน้อย */
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+  }
+  

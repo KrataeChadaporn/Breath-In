@@ -27,19 +27,20 @@ const PostDetails = () => {
 
   const fetchAuthorName = async (authorId) => {
     try {
-      const userRef = doc(db, "users", authorId);
+      if (!authorId) return "ไม่ระบุชื่อ"; // กรณีไม่มี authorId
+      const userRef = doc(db, "users", authorId); // อ้างอิง ID ของ author
       const userSnap = await getDoc(userRef);
       if (userSnap.exists()) {
         const userData = userSnap.data();
-        // ตรวจสอบว่ามีฟิลด์ name หรือ firstname
-        return userData.name || userData.firstname || "ไม่ระบุชื่อ";
+        // ตรวจสอบและคืนค่า firstName หรือ name
+        return userData.firstName || userData.name || "ไม่ระบุชื่อ";
       }
     } catch (err) {
       console.error("Error fetching author name:", err);
     }
     return "ไม่ระบุชื่อ";
   };
-
+  
   useEffect(() => {
     if (!postId) {
       setError("ไม่มี ID ของโพสต์ใน URL");

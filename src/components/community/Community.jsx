@@ -25,6 +25,20 @@ const Community = () => {
 
   const currentUser = auth.currentUser;
 
+  const fetchAuthorName = async (authorId) => {
+    try {
+      const userRef = doc(db, "users", authorId);
+      const userSnap = await getDoc(userRef);
+      if (userSnap.exists()) {
+        const userData = userSnap.data();
+        return userData.name || userData.firstName || "ไม่ระบุชื่อ";
+      }
+    } catch (error) {
+      console.error("Error fetching author name:", error);
+    }
+    return "ไม่ระบุชื่อ";
+  };
+
   // Fetch experts from Firestore
   useEffect(() => {
     const fetchExperts = async () => {
@@ -48,8 +62,8 @@ const Community = () => {
     fetchExperts();
   }, []);
 
-  // Fetch community posts from Firestore
-  useEffect(() => {
+   // Fetch community posts from Firestore
+   useEffect(() => {
     const fetchPosts = async () => {
       const postQuery = query(
         collection(db, "broadcasts"),
@@ -62,11 +76,7 @@ const Community = () => {
 
             // Fetch author details
             if (post.authorId) {
-              const userRef = doc(db, "users", post.authorId);
-              const userSnap = await getDoc(userRef);
-              post.authorName = userSnap.exists()
-                ? userSnap.data().name || "ไม่ระบุชื่อ"
-                : "ไม่ระบุชื่อ";
+              post.authorName = await fetchAuthorName(post.authorId);
             } else {
               post.authorName = "ไม่ระบุชื่อ";
             }
@@ -143,7 +153,9 @@ const Community = () => {
                       <h3>{expert.name}</h3>
                       <p>ความเชี่ยวชาญ: {expert.specialty}</p>
                       <p>สถานที่: {expert.location}</p>
-                      <p>คลีนิค: <Link to={'/clinic'}>{expert.clinicLocation}</Link></p>
+                      <p>
+                      คลีนิค: <Link to={'/clinic'}>{expert.clinicLocation}</Link>
+                    </p>
                     </div>
                     <button
                       className="btn-commuchat"
@@ -170,7 +182,7 @@ const Community = () => {
       <div className="community-section">
         <h2>โพสต์ของชุมชน</h2>
         <ul>
-          {posts.slice(0, 4).map((post) => ( // แสดงเพียง 4 รายการ
+          {posts.slice(0, 4).map((post) => (
             <li key={post.id} className="post-card">
               <Link to={`/post/${post.id}`} className="post-link">
                 <div>

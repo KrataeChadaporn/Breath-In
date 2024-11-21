@@ -28,6 +28,8 @@ import AudioPlayer from "./components/audio/AudioProvider";
 import CommuPage from "./components/post/CommuPage";
 import Clinic from "./components/clinic/Clinic";
 import UserProfile from "./components/clinic/UserProfile";
+import OCDSimulator from "./components/ocd/OCDSimmulator";
+import ColorSorting from "./components/ocd/ColorSorting";
 
 
 function App() {
@@ -38,13 +40,21 @@ function App() {
       <Header />
       <Routes>
         <Route path="/" element={<HomePage />} />
-        {/* โหมดจำลอง */}
-        <Route path="/simulator/:id" element={<PrivateRoute><Simulator /></PrivateRoute>} />
+        {/* โหมดจำลอง Self-Hatred*/}
+        <Route path="/simulator/Self-Hatred/:id" element={<PrivateRoute><Simulator /></PrivateRoute>} />
         <Route path="/simustar/:id" element={<SimuStar />} />
         <Route path="/simulast" element={<SimuLast />} />
         <Route path="/learn" element={<Learn />} />
         <Route path="/final-self" element={<FinalSelf />} />
         <Route path="/tellself" element={<TellSelf />} />
+
+        {/* โหมดจำลอง OCD */}
+        <Route path="/simulator/ocd/:id" element={<OCDSimulator />} />
+        <Route path="/color-sorting" element={<ColorSorting />} />
+
+
+
+
         {/* เข้าสู่ระบบ */}
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />

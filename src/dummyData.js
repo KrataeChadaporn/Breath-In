@@ -11,6 +11,7 @@ export const homeData = [
     cover: "../images/home1.jpg",
     video: "../video/video1.mp4",
     date: "20-Jan-2024",
+    a: "Self-Hatred"
   },
   {
     id: 2,
@@ -24,6 +25,7 @@ export const homeData = [
     cover: "../images/home2.jpg",
     video: "../video/video2.mp4",
     date: "10-JUL-2024",
+    a: "OCD"
   },
   {
     id: 3,
