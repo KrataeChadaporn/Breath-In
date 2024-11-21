@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
-import "./sortbox.css";
+import "./SortBox.css";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const shuffleArray = (array) => {
   const newArray = [...array];
@@ -76,11 +77,10 @@ const SortBox = () => {
 
   return (
     <div className="sort-box-containerAA">
-      <h2>จัดกลุ่มกล่องให้ถูกต้อง</h2>
+      <h2 className="text-sortbox">ดูกล่องพวกนี้สิ แน่ใจนะว่าจะไปต่อ</h2>
       <div className="grids-containerAA">
         {/* ตารางที่ผู้ใช้สามารถลากกล่องได้ */}
         <div>
-          <h3 className="Ex" >ตารางของคุณ</h3>
           <div className="box-gridAA">
             {boxes.map((box, index) => (
               <div
@@ -92,14 +92,14 @@ const SortBox = () => {
                 onDragEnd={handleDragEnd}
                 style={{
                   backgroundColor: box.color,
-                  border: "1px solid #000",
+                  border: "1px solid #000000",
                 }}
               ></div>
             ))}
           </div>
         </div>
 
-        {/* ตารางตัวอย่างที่ถูกต้อง */}
+        {/* ตารางตัวอย่างที่ถูกต้อง
         <div>
           <h3 className="Ex" >ตัวอย่างที่ถูกต้อง</h3>
           <div className="box-gridAA">
@@ -114,14 +114,14 @@ const SortBox = () => {
               ></div>
             ))}
           </div>
-        </div>
+        </div> */}
       </div>
 
       {/* แสดงปุ่ม "ไปต่อ" เฉพาะเมื่อจัดเรียงถูกต้อง */}
       {isGroupingCorrect() && (
-        <button className="next-buttonAA" onClick={() => navigate("/chack-list")}>
-          ไปต่อ
-        </button>
+         <Link to="/chack-list" className="next-buttonAA">
+         ไปต่อ
+       </Link>
       )}
     </div>
   );

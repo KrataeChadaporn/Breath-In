@@ -19,6 +19,10 @@ const Checklist = () => {
     { id: 9, text: "ทาครีม", done: false, color: "red" },
     { id: 10, text: "ตั้งนาฬิกาปลุก", done: false, color: "red" },
     { id: 11, text: "นอน", done: false, color: "red" },
+    { id: 12, text: "เช็คนาฬิกาปลุก", done: false, color: "red" },
+    { id: 13, text: "นอน", done: false, color: "red" },
+    { id: 14, text: "เช็คกลอนประตู", done: false, color: "red" },
+    { id: 15, text: "นอน", done: false, color: "red" },
   ]);
 
   const [allTasksShown, setAllTasksShown] = useState(false);

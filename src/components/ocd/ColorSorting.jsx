@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./ColorSorting.css";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const shuffleArray = (array) => {
   const newArray = [...array];
@@ -48,7 +49,7 @@ const ColorSorting = () => {
 
   return (
     <div className="color-sorting">
-        <h2>เรียงลำดับแถบสีให้ถูกต้อง</h2>
+        <h2 className="text-color">ลำดับสีแบบนี้ไม่ถูกต้อง</h2>
         <div className="color-container">
             {colors.map((color, index) => (
             <div
@@ -63,9 +64,9 @@ const ColorSorting = () => {
             ))}
         </div>
         {isOrderCorrect() && (
-            <button className="next-button" onClick={() => navigate("/sort-box")}>
+            <Link to="/sort-box" className="next-button">
             ไปต่อ
-            </button>
+          </Link>
         )}
     </div>
   );

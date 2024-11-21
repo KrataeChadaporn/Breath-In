@@ -18,17 +18,18 @@
   
   .box-gridAA {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
+    grid-template-columns: repeat(3, minmax(130px, 1fr)); /* คอลัมน์ยืดหยุ่นแต่ขนาดขั้นต่ำ 150px */
+    gap: 20px;
     padding: 20px;
     background-color: #ffffff;
     border: 2px dashed #ccc;
     border-radius: 8px;
-  }
+}
+
   
   .boxAA {
-    width: 100px;
-    height: 100px;
+    width: 150px;
+    height: 150px;
     border-radius: 5px;
     cursor: grab;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -41,21 +42,29 @@
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
   }
   
+  .text-sortbox{
+    margin-top: -70px;
+   
+    font-size: 50px;
+    color: #333; /* สีข้อความ */
+    text-align: center;
+    letter-spacing: 5px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+  }
   /* ปุ่ม "ไปต่อ" */
   .next-buttonAA {
     background-color: #e63946;
     color: white;
-    padding: 12px 24px;
+    padding: 15px 34px;
     border: none;
-    border-radius: 5px;
+    border-radius: 10px;
     cursor: pointer;
-    font-size: 16px;
-    margin-top: 20px;
+    font-size: 20px;
     transition: background-color 0.2s ease, transform 0.2s ease;
   }
   
   .next-buttonAA:hover {
-    background-color: #d62839;
+    background-color: #b82332;
     transform: scale(1.05);
   }
   

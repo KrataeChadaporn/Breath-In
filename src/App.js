@@ -30,6 +30,8 @@ import Clinic from "./components/clinic/Clinic";
 import UserProfile from "./components/clinic/UserProfile";
 import OCDSimulator from "./components/ocd/OCDSimmulator";
 import ColorSorting from "./components/ocd/ColorSorting";
+import SortBox from "./components/ocd/SortBox";
+import Checklist from "./components/ocd/Checklist"
 
 
 function App() {
@@ -51,6 +53,8 @@ function App() {
         {/* โหมดจำลอง OCD */}
         <Route path="/simulator/ocd/:id" element={<OCDSimulator />} />
         <Route path="/color-sorting" element={<ColorSorting />} />
+        <Route path="/sort-box" element={<SortBox/>} />
+        <Route path="/chack-list" element={<Checklist/>} />
 
 
 
