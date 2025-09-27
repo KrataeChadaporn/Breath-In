@@ -24,7 +24,7 @@ import Community from "./components/community/Community";
 import Blogread from "./components/blog/Blogread";
 import { AuthProvider } from "./components/login/auth/AuthContext";
 import PrivateRoute  from "../src/components/login/auth/PrivateRoute";
-import AudioPlayer from "./components/audio/AudioProvider";
+import AudioPlayer from "./components/Audio/AudioProvider.jsx";
 import CommuPage from "./components/post/CommuPage";
 import Clinic from "./components/clinic/Clinic";
 import UserProfile from "./components/clinic/UserProfile";
@@ -85,7 +85,7 @@ function App() {
         {/* โปรไฟล์ */}
         <Route path="/userprofile" element={<UserProfile />} />
       </Routes>
-      {/* <Footer /> */}
+      <Footer />
     </Router>
     </AuthProvider>
   );
